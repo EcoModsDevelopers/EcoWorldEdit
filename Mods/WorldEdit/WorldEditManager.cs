@@ -10,9 +10,8 @@ namespace Eco.Mods.WorldEdit
     public class WorldEditManager
     {
         protected static Dictionary<string, WorldEditUserData> mUserData = new Dictionary<string, WorldEditUserData>();
-
-
-        public static WorldEditUserData getUserData(string pUsername)
+        
+        public static WorldEditUserData GetUserData(string pUsername)
         {
             if (mUserData.Keys.Contains(pUsername))
                 return mUserData[pUsername];
@@ -22,7 +21,7 @@ namespace Eco.Mods.WorldEdit
             return weud;
         }
 
-        public static Type findBlockTypeFromBlockName(string pBlockName)
+        public static Type FindBlockTypeFromBlockName(string pBlockName)
         {
             pBlockName = pBlockName.ToLower();
 

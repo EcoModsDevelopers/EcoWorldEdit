@@ -9,27 +9,71 @@ namespace Eco.Mods.WorldEdit
 {
     public class WorldEditUserData
     {
-        public Vector3 LowerPos;
-        public Vector3 HigherPos;
+        public Vector3i? FirstPos;
+        public Vector3i? SecondPos;
 
-        public void sortVectors()
+        public SortedVectorPair GetSortedVectors()
         {
-            if (LowerPos == null || HigherPos == null)
-                return;
+            if (!FirstPos.HasValue || !SecondPos.HasValue)
+                return null;
 
-            Vector3 lower = new Vector3();
-            Vector3 higher = new Vector3();
+            Vector3i lower = new Vector3i();
+            Vector3i higher = new Vector3i();
 
-            lower.X = Math.Min(LowerPos.X, HigherPos.X);
-            lower.Y = Math.Min(LowerPos.Y, HigherPos.Y);
-            lower.Z = Math.Min(LowerPos.Z, HigherPos.Z);
+            Vector3i pos1 = FirstPos.Value;
+            Vector3i pos2 = SecondPos.Value;
 
-            higher.X = Math.Max(LowerPos.X, HigherPos.X);
-            higher.Y = Math.Max(LowerPos.Y, HigherPos.Y);
-            higher.Z = Math.Max(LowerPos.Z, HigherPos.Z);
+            lower.X = Math.Min(pos1.X, pos2.X);
+            lower.Y = Math.Min(pos1.Y, pos2.Y);
+            lower.Z = Math.Min(pos1.Z, pos2.Z);
 
-            LowerPos = lower;
-            HigherPos = higher;
+            higher.X = Math.Max(pos1.X, pos2.X);
+            higher.Y = Math.Max(pos1.Y, pos2.Y);
+            higher.Z = Math.Max(pos1.Z, pos2.Z);
+
+            return new SortedVectorPair(lower, higher);
+        }
+
+        public bool ApplyToHighestVector(Func<Vector3i, Vector3i> pFunc)
+        {
+            if (!FirstPos.HasValue || !SecondPos.HasValue)
+                return false;
+
+            if (FirstPos.Value.Y > SecondPos.Value.Y)
+            {
+                FirstPos = pFunc.Invoke(FirstPos.Value);
+                return true;
+            }
+
+            SecondPos = pFunc.Invoke(SecondPos.Value);
+            return true;
+        }
+
+        public bool ApplyToLowestVector(Func<Vector3i, Vector3i> pFunc)
+        {
+            if (!FirstPos.HasValue || !SecondPos.HasValue)
+                return false;
+
+            if (FirstPos.Value.Y < SecondPos.Value.Y)
+            {
+                FirstPos = pFunc.Invoke(FirstPos.Value);
+                return true;
+            }
+
+            SecondPos = pFunc.Invoke(SecondPos.Value);
+            return true;
+        }
+
+        public class SortedVectorPair
+        {
+            public Vector3i Lower { get; protected set; }
+            public Vector3i Higher { get; protected set; }
+
+            public SortedVectorPair(Vector3i pLower, Vector3i pHigher)
+            {
+                Lower = pLower;
+                Higher = pHigher;
+            }
         }
     }
 }

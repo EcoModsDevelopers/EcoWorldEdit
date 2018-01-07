@@ -25,6 +25,8 @@ namespace Eco.Mods.WorldEdit
         public override string FriendlyName { get { return "Wand Tool"; } }
         public override string Description { get { return "Does magical World Edit things"; } }
 
+        public override string LeftActionDescription { get { return string.Empty; } }
+
         public override ClientPredictedAction LeftAction { get { return ClientPredictedAction.None; } }
 
         public override InteractResult OnActLeft(InteractionContext context)
@@ -36,10 +38,9 @@ namespace Eco.Mods.WorldEdit
 
                 var pos = context.BlockPosition.Value;
 
-                WorldEditUserData weud = WorldEditManager.getUserData(context.Player.User.Name);
-                weud.LowerPos = pos;
-                weud.sortVectors();
-
+                WorldEditUserData weud = WorldEditManager.GetUserData(context.Player.User.Name);
+                weud.FirstPos = pos;
+    
                 context.Player.SendTemporaryMessage("First Position set to (" + pos.x + ", " + pos.y + ", " + pos.z + ")");
             }
             catch (Exception e)
@@ -58,10 +59,9 @@ namespace Eco.Mods.WorldEdit
 
                 var pos = context.BlockPosition.Value;
 
-                WorldEditUserData weud = WorldEditManager.getUserData(context.Player.User.Name);
-                weud.HigherPos = pos;
-                weud.sortVectors();
-
+                WorldEditUserData weud = WorldEditManager.GetUserData(context.Player.User.Name);
+                weud.SecondPos = pos;
+ 
                 context.Player.SendTemporaryMessage("Second Position set to (" + pos.x + ", " + pos.y + ", " + pos.z + ")");
             }
             catch (Exception e)
@@ -69,7 +69,6 @@ namespace Eco.Mods.WorldEdit
                 Log.WriteError(e.ToStringPretty());
             }
             return InteractResult.Success;
-
         }
     }
 }
