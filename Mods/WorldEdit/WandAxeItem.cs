@@ -40,7 +40,7 @@ namespace Eco.Mods.WorldEdit
 
                 WorldEditUserData weud = WorldEditManager.GetUserData(context.Player.User.Name);
                 weud.FirstPos = pos;
-    
+
                 context.Player.SendTemporaryMessage("First Position set to (" + pos.x + ", " + pos.y + ", " + pos.z + ")");
             }
             catch (Exception e)
@@ -61,7 +61,7 @@ namespace Eco.Mods.WorldEdit
 
                 WorldEditUserData weud = WorldEditManager.GetUserData(context.Player.User.Name);
                 weud.SecondPos = pos;
- 
+
                 context.Player.SendTemporaryMessage("Second Position set to (" + pos.x + ", " + pos.y + ", " + pos.z + ")");
             }
             catch (Exception e)
@@ -69,6 +69,11 @@ namespace Eco.Mods.WorldEdit
                 Log.WriteError(e.ToStringPretty());
             }
             return InteractResult.Success;
+        }
+
+        public override bool ShouldHighlight(Type block)
+        {
+            return true;
         }
     }
 }

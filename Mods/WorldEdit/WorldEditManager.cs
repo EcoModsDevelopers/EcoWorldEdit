@@ -101,8 +101,6 @@ namespace Eco.Mods.WorldEdit
                     newplant.Dead = pb.Dead;
                     newplant.DeadType = pb.DeadType;
                     newplant.GrowthPercent = pb.GrowthPercent;
-                    newplant.GrowthRate = pb.GrowthPercent;
-                    //           newplant.PlantPack = pb.PlantPack;
                     newplant.TreeNode = pb.TreeNode;
 
                     return;
