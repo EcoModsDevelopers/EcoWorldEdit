@@ -1,7 +1,16 @@
-﻿using Eco.Shared.Math;
+﻿using Eco.Core.Serialization;
+using Eco.Gameplay.Plants;
+using Eco.Shared.Math;
+using Eco.Simulation;
+using Eco.Simulation.Agents;
+using Eco.World;
+using Eco.World.Blocks;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +20,11 @@ namespace Eco.Mods.WorldEdit
     {
         public Vector3i? FirstPos;
         public Vector3i? SecondPos;
+
+        //     private bool mUndoDone = false;
+
+        //multiple undos with circular buffer?
+        private Stack<WorldEditBlock> mLastCommandBlocks = null;
 
         public SortedVectorPair GetSortedVectors()
         {
@@ -27,53 +41,56 @@ namespace Eco.Mods.WorldEdit
             lower.Y = Math.Min(pos1.Y, pos2.Y);
             lower.Z = Math.Min(pos1.Z, pos2.Z);
 
-            higher.X = Math.Max(pos1.X, pos2.X);
-            higher.Y = Math.Max(pos1.Y, pos2.Y);
-            higher.Z = Math.Max(pos1.Z, pos2.Z);
+            higher.X = Math.Max(pos1.X, pos2.X) + 1;
+            higher.Y = Math.Max(pos1.Y, pos2.Y) + 1;
+            higher.Z = Math.Max(pos1.Z, pos2.Z) + 1;
 
             return new SortedVectorPair(lower, higher);
         }
 
-        public bool ApplyToHighestVector(Func<Vector3i, Vector3i> pFunc)
+        public bool ExpandSelection(Vector3i pDirection)
         {
             if (!FirstPos.HasValue || !SecondPos.HasValue)
                 return false;
 
-            if (FirstPos.Value.Y > SecondPos.Value.Y)
-            {
-                FirstPos = pFunc.Invoke(FirstPos.Value);
-                return true;
-            }
+            var firstResult = SumAllAxis(pDirection * FirstPos.Value);
+            var secondResult = SumAllAxis(pDirection * SecondPos.Value);
 
-            SecondPos = pFunc.Invoke(SecondPos.Value);
+            if (firstResult > secondResult)
+                FirstPos = FirstPos + pDirection;
+            else
+                SecondPos = SecondPos + pDirection;
+
             return true;
         }
 
-        public bool ApplyToLowestVector(Func<Vector3i, Vector3i> pFunc)
+        // Is there a correct name for this operation?
+        public int SumAllAxis(Vector3i pVector)
         {
-            if (!FirstPos.HasValue || !SecondPos.HasValue)
+            return pVector.X + pVector.Y + pVector.Z;
+        }
+
+        public void StartEditingBlocks()
+        {
+            mLastCommandBlocks = new Stack<WorldEditBlock>();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void addBlockChangedEntry(Block pBlock, Vector3i pPosition)
+        {
+            mLastCommandBlocks.Push(new WorldEditBlock(pBlock, pPosition));
+        }
+
+        public bool Undo()
+        {
+            if (mLastCommandBlocks == null)
                 return false;
 
-            if (FirstPos.Value.Y < SecondPos.Value.Y)
+            foreach (var entry in mLastCommandBlocks)
             {
-                FirstPos = pFunc.Invoke(FirstPos.Value);
-                return true;
+                WorldEditManager.SetBlock(entry);
             }
-
-            SecondPos = pFunc.Invoke(SecondPos.Value);
             return true;
-        }
-
-        public class SortedVectorPair
-        {
-            public Vector3i Lower { get; protected set; }
-            public Vector3i Higher { get; protected set; }
-
-            public SortedVectorPair(Vector3i pLower, Vector3i pHigher)
-            {
-                Lower = pLower;
-                Higher = pHigher;
-            }
         }
     }
 }

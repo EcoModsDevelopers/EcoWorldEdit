@@ -27,7 +27,7 @@ namespace Eco.Mods.WorldEdit
 
         public override string LeftActionDescription { get { return string.Empty; } }
 
-        public override ClientPredictedAction LeftAction { get { return ClientPredictedAction.None; } }
+        public override ClientPredictedBlockAction LeftAction { get { return ClientPredictedBlockAction.None; } }
 
         public override InteractResult OnActLeft(InteractionContext context)
         {
