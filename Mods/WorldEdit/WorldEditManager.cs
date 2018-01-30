@@ -1,5 +1,6 @@
 ﻿using Eco.Core.Plugins;
 using Eco.Core.Serialization;
+using Eco.Gameplay.Items;
 using Eco.Gameplay.Players;
 using Eco.Shared.Math;
 using Eco.Simulation;
@@ -25,6 +26,12 @@ namespace Eco.Mods.WorldEdit
 
 
         protected static Dictionary<string, WorldEditUserData> mUserData = new Dictionary<string, WorldEditUserData>();
+
+        public static ItemStack getWandItemStack()
+        {
+            Item item = Item.Get("WandAxeItem");
+            return new ItemStack(item, 1);
+        }
 
         public static WorldEditUserData GetUserData(string pUsername)
         {

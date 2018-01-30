@@ -23,9 +23,20 @@ namespace Eco.Mods.WorldEdit
         {
             try
             {
-                Item item = Item.Get("WandAxeItem");
-                ItemStack itemStack = new ItemStack(item, 1);
-                user.Inventory.AddItems(itemStack);
+                user.Inventory.AddItems(WorldEditManager.getWandItemStack());
+            }
+            catch (Exception e)
+            {
+                Log.WriteError(e.ToStringPretty());
+            }
+        }
+
+        [ChatCommand("/rmwand", "", ChatAuthorizationLevel.Admin)]
+        public static void RmWand(User user)
+        {
+            try
+            {
+                user.Inventory.TryRemoveItems(WorldEditManager.getWandItemStack());
             }
             catch (Exception e)
             {
