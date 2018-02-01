@@ -47,10 +47,17 @@ namespace Eco.Mods.WorldEdit
         {
             pBlockName = pBlockName.ToLower();
 
-            Type blockType = BlockManager.BlockTypes.FirstOrDefault(t => t.Name.ToLower() == pBlockName + "block");
+            if (pBlockName == "air")
+                return typeof(EmptyBlock);
+
+            Type blockType = BlockManager.BlockTypes.FirstOrDefault(t => t.Name.ToLower() == pBlockName + "floorblock");
 
             if (blockType == null)
                 blockType = BlockManager.BlockTypes.FirstOrDefault(t => t.Name.ToLower() == pBlockName);
+
+            if (blockType == null)
+                blockType = BlockManager.BlockTypes.FirstOrDefault(t => t.Name.ToLower() == pBlockName + "block");
+
 
             return blockType;
         }
