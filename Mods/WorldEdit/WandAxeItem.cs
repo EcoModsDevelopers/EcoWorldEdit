@@ -66,8 +66,6 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(context.Player.User.Name);
                 weud.SecondPos = pos;
 
-
-
                 context.Player.SendTemporaryMessage("Second Position set to (" + pos.x + ", " + pos.y + ", " + pos.z + ")");
             }
             catch (Exception e)

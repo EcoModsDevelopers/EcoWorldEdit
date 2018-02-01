@@ -379,5 +379,60 @@ namespace Eco.Mods.WorldEdit
                 Log.WriteError(e.ToStringPretty());
             }
         }
+
+
+        [ChatCommand("/copy", "", ChatAuthorizationLevel.Admin)]
+        public static void Copy(User user)
+        {
+            try
+            {
+                WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
+
+                if (weud.SaveSelectionToClipboard(user))
+                    user.Player.SendTemporaryMessage("Copy done.");
+                else
+                    user.Player.SendTemporaryMessage("Please set both Points with the Wand Tool first!");
+            }
+            catch (Exception e)
+            {
+                Log.WriteError(e.ToStringPretty());
+            }
+        }
+
+        [ChatCommand("/paste", "", ChatAuthorizationLevel.Admin)]
+        public static void Paste(User user)
+        {
+            try
+            {
+                WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
+
+                if (weud.LoadSelectionFromClipboard(user))
+                    user.Player.SendTemporaryMessage("Paste done.");
+                else
+                    user.Player.SendTemporaryMessage("Please copy a selection first!");
+            }
+            catch (Exception e)
+            {
+                Log.WriteError(e.ToStringPretty());
+            }
+        }
+
+        [ChatCommand("/rotate", "", ChatAuthorizationLevel.Admin)]
+        public static void Rotate(User user, int pDegree = 90)
+        {
+            try
+            {
+                WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
+
+                if (weud.RotateClipboard(pDegree))
+                    user.Player.SendTemporaryMessage("Rotation in clipboard done.");
+                else
+                    user.Player.SendTemporaryMessage("Please copy a selection first!");
+            }
+            catch (Exception e)
+            {
+                Log.WriteError(e.ToStringPretty());
+            }
+        }
     }
 }

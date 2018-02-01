@@ -1,6 +1,8 @@
 ﻿using Eco.Core.Serialization;
 using Eco.Gameplay.Plants;
+using Eco.Gameplay.Players;
 using Eco.Shared.Math;
+using Eco.Shared.Utils;
 using Eco.Simulation;
 using Eco.Simulation.Agents;
 using Eco.World;
@@ -25,6 +27,9 @@ namespace Eco.Mods.WorldEdit
 
         //multiple undos with circular buffer?
         private Stack<WorldEditBlock> mLastCommandBlocks = null;
+
+        private List<WorldEditBlock> mClipboard = new List<WorldEditBlock>(); //Maybe "better" type?
+        private Vector3i mUserClipboardPosition;
 
         public SortedVectorPair GetSortedVectors()
         {
@@ -92,5 +97,65 @@ namespace Eco.Mods.WorldEdit
             }
             return true;
         }
+
+        public bool SaveSelectionToClipboard(User pUser)
+        {
+            var vectors = GetSortedVectors();
+
+            if (vectors == null)
+                return false;
+
+            mUserClipboardPosition = pUser.Player.Position.Round;
+
+            mClipboard.Clear();
+
+            for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+                for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
+                    for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                    {
+                        var pos = new Vector3i(x, y, z);
+
+                        //pos - mUserClipboardPosition: "Spitze minus Anfang"
+                        mClipboard.Add(new WorldEditBlock(Eco.World.World.GetBlock(pos), pos - mUserClipboardPosition));
+                    }
+            return true;
+        }
+
+        public bool LoadSelectionFromClipboard(User pUser)
+        {
+            if (mClipboard == null)
+                return false;
+
+            var currentPos = pUser.Player.Position.Round;
+
+            foreach (var entry in mClipboard)
+            {
+                var web = entry.Clone();
+                web.Position += currentPos;
+                WorldEditManager.SetBlock(web);
+            }
+            return true;
+        }
+
+        public bool RotateClipboard(float pAngle)
+        {
+            if (mClipboard == null)
+                return false;
+
+            AffineTransform transform = new AffineTransform();
+
+            pAngle = (float)(Math.PI * MathUtil.NormalizeAngle0to360(pAngle) / 180.0);
+            transform = transform.RotateY(pAngle);
+
+            for (int i = 0; i < mClipboard.Count; i++)
+            {
+                var block = mClipboard[i].Clone();
+                block.Position = transform.Apply(block.Position);
+                mClipboard[i] = block;
+            }
+
+            return true;
+        }
+
     }
 }

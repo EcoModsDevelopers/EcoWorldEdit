@@ -41,5 +41,10 @@ namespace Eco.Mods.WorldEdit
                 }
             }
         }
+
+        public WorldEditBlock Clone()
+        {
+            return new WorldEditBlock(Type, Data, Position);
+        }
     }
 }

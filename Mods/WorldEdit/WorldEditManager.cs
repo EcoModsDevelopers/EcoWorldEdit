@@ -57,8 +57,7 @@ namespace Eco.Mods.WorldEdit
 
             if (blockType == null)
                 blockType = BlockManager.BlockTypes.FirstOrDefault(t => t.Name.ToLower() == pBlockName + "block");
-
-
+            
             return blockType;
         }
 
