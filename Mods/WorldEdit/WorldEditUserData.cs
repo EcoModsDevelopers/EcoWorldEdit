@@ -126,12 +126,15 @@ namespace Eco.Mods.WorldEdit
             if (mClipboard == null)
                 return false;
 
+            StartEditingBlocks();
             var currentPos = pUser.Player.Position.Round;
 
             foreach (var entry in mClipboard)
             {
                 var web = entry.Clone();
                 web.Position += currentPos;
+
+                addBlockChangedEntry(Eco.World.World.GetBlock(web.Position), web.Position);
                 WorldEditManager.SetBlock(web);
             }
             return true;
