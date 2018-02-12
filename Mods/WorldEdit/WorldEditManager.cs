@@ -1,8 +1,10 @@
 ﻿using Eco.Core.Plugins;
 using Eco.Core.Serialization;
 using Eco.Gameplay.Items;
+using Eco.Gameplay.Objects;
 using Eco.Gameplay.Players;
 using Eco.Shared.Math;
+using Eco.Shared.Utils;
 using Eco.Simulation;
 using Eco.Simulation.Agents;
 using Eco.World;
@@ -23,9 +25,10 @@ namespace Eco.Mods.WorldEdit
         protected static int mDefaultWorldSaveFrequency;
         protected static bool mWorldSaveStopped = false;
         protected static object mLocker = new object();
-
+        //  internal static SimpleSerializer mSimpleSerializer = new SimpleSerializer();
 
         protected static Dictionary<string, WorldEditUserData> mUserData = new Dictionary<string, WorldEditUserData>();
+
 
         public static ItemStack getWandItemStack()
         {
@@ -57,14 +60,14 @@ namespace Eco.Mods.WorldEdit
 
             if (blockType == null)
                 blockType = BlockManager.BlockTypes.FirstOrDefault(t => t.Name.ToLower() == pBlockName + "block");
-            
+
             return blockType;
         }
 
         //an idea was to move this method to WorldEditUserData, but then maybe findBlock must be called twice
         public static Block SetBlock(Type pType, Vector3i pVector, params object[] pArgs)
         {
-            if (pType == typeof(EmptyBlock))
+            if (pType == null || pType == typeof(EmptyBlock))
             {
                 Eco.World.World.DeleteBlock(pVector);
                 return null;
@@ -75,6 +78,9 @@ namespace Eco.Mods.WorldEdit
 
         public static void SetBlock(WorldEditBlock pBlock)
         {
+            if (pBlock.Type == null)
+                pBlock.Type = typeof(EmptyBlock);
+
             var constuctor = pBlock.Type.GetConstructor(Type.EmptyTypes);
 
             if (constuctor != null)
@@ -112,11 +118,52 @@ namespace Eco.Mods.WorldEdit
                     return;
                 }
 
-                throw new InvalidOperationException("Unknown Type");
+                Log.WriteLine("Unknown Type: " + pBlock.Type);
             }
+            /*
 
-            throw new InvalidOperationException("Unknown Type");
+            types[0] = typeof(WorldObject);
+            constuctor = pBlock.Type.GetConstructor(types);
+
+            if (constuctor != null)
+            {
+                MemoryStream ms = new MemoryStream(pBlock.Data);
+                var obj = EcoSerializer.Deserialize(ms);
+
+                if (obj is WorldObjectBlock)
+                {
+                    // ((PlantBlock)block).Plant = ((PlantBlock)obj).Plant;
+                    WorldObjectBlock pb = (WorldObjectBlock)obj;
+
+                    WorldObject wObject = pb.WorldObjectHandle.Object;
+
+                    //    .ObjectID = Guid.NewGuid();
+
+
+
+                    //       wWorldObject newWObject = WorldObjectManager.TryToAdd(WorldObjectManager.GetTypeFromName("StorageChestObject"), wObject.Creator.User,
+                    //           pBlock.Position, wObject.Rotation, false, wObject.CreationItem);
+
+
+                    //       wObject.GetType().InvokeMember("ObjectID", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.SetProperty | BindingFlags.Instance, null, wObject, new object[] { Guid.NewGuid() });
+                    
+                    if (WorldObjectManager.GetFromID(wObject.ObjectID) == null)
+                    {
+                        wObject = WorldObjectManager.Add(wObject, wObject.Creator.User, pBlock.Position, wObject.Rotation);
+                    }
+
+                    //      Block block = WorldEditManager.SetBlock(typeof(WorldObjectBlock), pBlock.Position, wObject);
+                    //       WorldObjectBlock newBlock = block as WorldObjectBlock;
+
+                    return;
+                }
+
+            }*/
+
+            Log.WriteLine("Unknown Type: " + pBlock.Type);
         }
+
+
 
 
         public static Direction getLookingDirection(User pUser)

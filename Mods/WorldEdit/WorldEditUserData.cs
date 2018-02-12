@@ -20,6 +20,7 @@ namespace Eco.Mods.WorldEdit
 {
     public class WorldEditUserData
     {
+        public const string mSchematicPath = "./Schematics/";
         public Vector3i? FirstPos;
         public Vector3i? SecondPos;
 
@@ -156,6 +157,35 @@ namespace Eco.Mods.WorldEdit
                 block.Position = transform.Apply(block.Position);
                 mClipboard[i] = block;
             }
+
+            return true;
+        }
+
+        public bool SaveClipboard(string pFileName)
+        {
+            if (mClipboard == null)
+                return false;
+
+            var stream = EcoSerializer.Serialize(mClipboard.ToArray());
+
+            Directory.CreateDirectory(mSchematicPath);
+            pFileName = new string(pFileName.Where(x => !Path.GetInvalidFileNameChars().Contains(x)).ToArray());
+
+            File.WriteAllBytes(Path.Combine(mSchematicPath, pFileName + ".ecoschematic"), stream.ToArray());
+
+            return true;
+        }
+
+        public bool LoadClipboard(string pFileName)
+        {
+            pFileName = new string(pFileName.Where(x => !Path.GetInvalidFileNameChars().Contains(x)).ToArray());
+
+            pFileName = Path.Combine(mSchematicPath, pFileName + ".ecoschematic");
+
+            if (!File.Exists(pFileName))
+                return false;
+
+            mClipboard = EcoSerializer.Deserialize<List<WorldEditBlock>>(File.OpenRead(pFileName));
 
             return true;
         }

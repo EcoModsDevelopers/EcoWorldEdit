@@ -434,5 +434,42 @@ namespace Eco.Mods.WorldEdit
                 Log.WriteError(e.ToStringPretty());
             }
         }
+
+        [ChatCommand("/export", "", ChatAuthorizationLevel.Admin)]
+        public static void Export(User user, string pFileName)
+        {
+            try
+            {
+                WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
+
+                if (weud.SaveClipboard(pFileName))
+                    user.Player.SendTemporaryMessage("Export done.");
+                else
+                    user.Player.SendTemporaryMessage("Please copy a selection first!");
+            }
+            catch (Exception e)
+            {
+                Log.WriteError(e.ToStringPretty());
+            }
+        }
+
+        [ChatCommand("/import", "", ChatAuthorizationLevel.Admin)]
+        public static void Import(User user, string pFileName)
+        {
+            try
+            {
+                WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
+
+                if (weud.LoadClipboard(pFileName))
+                    user.Player.SendTemporaryMessage("Import done. Use //paste");
+                else
+                    user.Player.SendTemporaryMessage("Schematic file not found! ");
+            }
+            catch (Exception e)
+            {
+                Log.WriteError(e.ToStringPretty());
+            }
+        }
+
     }
 }
