@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9EADB290-4AA0-4A0F-B5B3-1C7296C426C2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EcoWorldEdit</RootNamespace>
+    <AssemblyName>EcoWorldEdit</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AffineTransform.cs" />
+    <Compile Include="EcoWorldEdit.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserSession.cs" />
+    <Compile Include="SortedVectorPair.cs" />
+    <Compile Include="WandAxeItem.cs" />
+    <Compile Include="WorldEditBlock.cs" />
+    <Compile Include="WorldEditCommands.cs" />
+    <Compile Include="WorldEditManager.cs" />
+    <Compile Include="WorldEditUserData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="E:\Eco\Server\Eco.Core\Eco.Core.csproj">
+      <Project>{be1761ab-69f5-481c-a4bf-9a7251c02596}</Project>
+      <Name>Eco.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Eco\Server\Eco.Gameplay\Eco.Gameplay.csproj">
+      <Project>{5c980505-2974-4b4b-b56a-2be2422e98aa}</Project>
+      <Name>Eco.Gameplay</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Eco\Server\Eco.ModKit\Eco.ModKit.csproj">
+      <Project>{c09e1100-6122-4e22-ba57-4f335c82d3b7}</Project>
+      <Name>Eco.ModKit</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Eco\Server\Eco.Mods\Eco.Mods.csproj">
+      <Project>{7a3fb11d-3a73-4b0c-b991-7326b54ff606}</Project>
+      <Name>Eco.Mods</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Eco\Server\Eco.Plugins\Eco.Plugins.csproj">
+      <Project>{5e8e63d5-9898-4830-9918-8dad0b995bb3}</Project>
+      <Name>Eco.Plugins</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Eco\Server\Eco.Shared\Eco.Shared.csproj">
+      <Project>{510558a8-a88e-473f-b07d-918e696c81e1}</Project>
+      <Name>Eco.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Eco\Server\Eco.Simulation\Eco.Simulation.csproj">
+      <Project>{7d66ec71-4045-460e-8f16-7f5b64e79939}</Project>
+      <Name>Eco.Simulation</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Eco\Server\Eco.Stats\Eco.Stats.csproj">
+      <Project>{c945e354-36f5-41cb-b7a1-435ca48ec0d2}</Project>
+      <Name>Eco.Stats</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Eco\Server\Eco.Tests\Eco.Tests.csproj">
+      <Project>{7f353c23-c53a-41cc-9e3e-4162ac5441cf}</Project>
+      <Name>Eco.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Eco\Server\Eco.Webserver\Eco.WebServer.csproj">
+      <Project>{eca98155-9d8d-47e1-a1b8-b29cdb192979}</Project>
+      <Name>Eco.WebServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Eco\Server\Eco.WorldGenerator\Eco.WorldGenerator.csproj">
+      <Project>{6799b69a-9bb0-4e26-b6c9-6b7c9eec3a03}</Project>
+      <Name>Eco.WorldGenerator</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Eco\Server\Eco.World\Eco.World.csproj">
+      <Project>{08bd87d1-b811-4665-b5cd-52e331932fb8}</Project>
+      <Name>Eco.World</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /y /r "$(TargetPath)" "$(SolutionDir)Mods\"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

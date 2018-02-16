@@ -7,6 +7,7 @@ using Eco.Simulation;
 using Eco.Simulation.Agents;
 using Eco.World;
 using Eco.World.Blocks;
+using EcoWorldEdit;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,7 +31,13 @@ namespace Eco.Mods.WorldEdit
         private Stack<WorldEditBlock> mLastCommandBlocks = null;
 
         private List<WorldEditBlock> mClipboard = new List<WorldEditBlock>(); //Maybe "better" type?
+
         private Vector3i mUserClipboardPosition;
+
+        public UserSession GetNewSession()
+        {
+            return new UserSession();
+        }
 
         public SortedVectorPair GetSortedVectors()
         {
@@ -62,11 +69,21 @@ namespace Eco.Mods.WorldEdit
             var firstResult = SumAllAxis(pDirection * FirstPos.Value);
             var secondResult = SumAllAxis(pDirection * SecondPos.Value);
 
-            if (firstResult > secondResult)
+            if (Math.Abs(firstResult) > Math.Abs(secondResult))
                 FirstPos = FirstPos + pDirection;
             else
                 SecondPos = SecondPos + pDirection;
 
+            return true;
+        }
+
+        public bool ShiftSelection(Vector3i pDirection)
+        {
+            if (!FirstPos.HasValue || !SecondPos.HasValue)
+                return false;
+
+            FirstPos = FirstPos + pDirection;
+            SecondPos = SecondPos + pDirection;
             return true;
         }
 
@@ -122,7 +139,7 @@ namespace Eco.Mods.WorldEdit
             return true;
         }
 
-        public bool LoadSelectionFromClipboard(User pUser)
+        public bool LoadSelectionFromClipboard(User pUser, WorldEditUserData pWeud)
         {
             if (mClipboard == null)
                 return false;
@@ -130,13 +147,15 @@ namespace Eco.Mods.WorldEdit
             StartEditingBlocks();
             var currentPos = pUser.Player.Position.Round;
 
+            UserSession session = pWeud.GetNewSession();
+
             foreach (var entry in mClipboard)
             {
                 var web = entry.Clone();
                 web.Position += currentPos;
 
                 addBlockChangedEntry(Eco.World.World.GetBlock(web.Position), web.Position);
-                WorldEditManager.SetBlock(web);
+                WorldEditManager.SetBlock(web.Type, web.Position, session, null, web.Data);
             }
             return true;
         }

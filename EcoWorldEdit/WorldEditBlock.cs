@@ -28,7 +28,7 @@ namespace Eco.Mods.WorldEdit
         {
         }
 
-        public WorldEditBlock(Type pType, byte[] pData, Vector3i pPosition) //: this()  /TODO change to struct
+        public WorldEditBlock(Type pType, Vector3i pPosition, byte[] pData) //: this()  /TODO change to struct
         {
             Type = pType;
             Position = pPosition;
@@ -54,7 +54,7 @@ namespace Eco.Mods.WorldEdit
 
         public WorldEditBlock Clone()
         {
-            return new WorldEditBlock(Type, Data, Position);
+            return new WorldEditBlock(Type, Position, Data);
         }
     }
 

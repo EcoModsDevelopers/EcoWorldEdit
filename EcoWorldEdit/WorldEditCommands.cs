@@ -1,6 +1,7 @@
 ﻿using Eco.Core.Plugins;
 using Eco.Gameplay;
 using Eco.Gameplay.Items;
+using Eco.Gameplay.Plants;
 using Eco.Gameplay.Players;
 using Eco.Gameplay.Systems.Chat;
 using Eco.Mods.TechTree;
@@ -8,6 +9,7 @@ using Eco.Shared.Math;
 using Eco.Shared.Utils;
 using Eco.World;
 using Eco.World.Blocks;
+using EcoWorldEdit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,7 +82,7 @@ namespace Eco.Mods.WorldEdit
 
                 int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z));
 
-                user.Player.SendTemporaryMessage("Around " + changedBlocks + " blocks changed.");
+                user.Player.SendTemporaryMessage(changedBlocks + " blocks changed.");
             }
             catch (Exception e)
             {
@@ -246,7 +248,7 @@ namespace Eco.Mods.WorldEdit
         }
 
         [ChatCommand("/stack", "", ChatAuthorizationLevel.Admin)]
-        public static void Stack(User user, int pAmount = 1)
+        public static void Stack(User user, string pDirectionAndAmount = "1")
         {
             try
             {
@@ -254,17 +256,18 @@ namespace Eco.Mods.WorldEdit
 
                 if (weud.FirstPos == null || weud.SecondPos == null)
                 {
-                    user.Player.SendTemporaryMessage("Please set both Points with the Wand Tool first!");
+                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
                     return;
                 }
 
                 var vectors = weud.GetSortedVectors();
 
-                Direction dir = WorldEditManager.getLookingDirection(user);
+                Direction dir = WorldEditManager.GetDirectionAndAmount(user, pDirectionAndAmount, out int amount);
 
                 weud.StartEditingBlocks();
+                UserSession session = weud.GetNewSession();
 
-                for (int i = 1; i <= pAmount; i++)
+                for (int i = 1; i <= amount; i++)
                 {
                     Vector3i offset = dir.ToVec() * (vectors.Higher - vectors.Lower) * i;
 
@@ -275,13 +278,14 @@ namespace Eco.Mods.WorldEdit
                                 var pos = new Vector3i(x, y, z);
 
                                 weud.addBlockChangedEntry(Eco.World.World.GetBlock(pos + offset), pos + offset);
-                                WorldEditManager.SetBlock(new WorldEditBlock(Eco.World.World.GetBlock(pos), pos + offset));
+                                var sourceBlock = Eco.World.World.GetBlock(pos);
+                                WorldEditManager.SetBlock(sourceBlock.GetType(), pos + offset, session, sourceBlock);
                             }
                 }
 
-                int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z)) * pAmount;
+                int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z)) * amount;
 
-                user.Player.SendTemporaryMessage("Around " + changedBlocks + " blocks changed.");
+                user.Player.SendTemporaryMessage(changedBlocks + " blocks changed.");
             }
             catch (Exception e)
             {
@@ -290,53 +294,122 @@ namespace Eco.Mods.WorldEdit
         }
 
 
+
+        [ChatCommand("/move", "", ChatAuthorizationLevel.Admin)]
+        public static void Move(User user, string pDirectionAndAmount = "1")
+        {
+            try
+            {
+                WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
+
+                if (weud.FirstPos == null || weud.SecondPos == null)
+                {
+                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
+                    return;
+                }
+
+                var vectors = weud.GetSortedVectors();
+
+                Direction dir = WorldEditManager.GetDirectionAndAmount(user, pDirectionAndAmount, out int amount);
+
+                weud.StartEditingBlocks();
+
+                UserSession session = weud.GetNewSession();
+
+                Vector3i offset = dir.ToVec() * amount;
+
+           //     if (dir == Direction.Up)
+          //          offset *= vectors.Higher.Y - vectors.Lower.Y;
+
+                for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+
+                    for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
+                        for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                        {
+                            int y2 = y;
+                            if (dir == Direction.Up)
+                                y2 = vectors.Lower.Y + (vectors.Higher.Y - 1 - y);
+
+                            var pos = new Vector3i(x, y2, z);
+
+                            weud.addBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
+                            weud.addBlockChangedEntry(Eco.World.World.GetBlock(pos + offset), pos + offset);
+
+                            var sourceBlock = Eco.World.World.GetBlock(pos);
+                            WorldEditManager.SetBlock(sourceBlock.GetType(), pos + offset, session, sourceBlock);
+                            WorldEditManager.SetBlock(typeof(EmptyBlock), pos, session);
+                        }
+
+
+                int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z)) * amount;
+
+                user.Player.SendTemporaryMessage(changedBlocks + " blocks moved.");
+            }
+            catch (Exception e)
+            {
+                Log.WriteError(e.ToStringPretty());
+            }
+        }
+
         [ChatCommand("/expand", "", ChatAuthorizationLevel.Admin)]
         public static void Expand(User user, string pDirectionAndAmount = "1")
         {
             try
             {
-                int amount = 1;
-                // Vector3i direction = user.FacingDir.ToVec();
-                Direction direction = Direction.Unknown;
-
-                if (pDirectionAndAmount != null)
-                {
-                    string[] splitted = pDirectionAndAmount.Split(' ');
-
-                    if (!int.TryParse(splitted[0], out amount))
-                    {
-                        user.Player.SendTemporaryError("Please provide an amount first");
-                        return;
-                    }
-
-                    if (splitted.Length >= 2)
-                    {
-                        switch (splitted[1])
-                        {
-                            case "up":
-                            case "u":
-                                direction = Direction.Up;
-                                break;
-                            case "down":
-                            case "d":
-                                direction = Direction.Down;
-                                break;
-                            default:
-                                user.Player.SendTemporaryError("Unknown direction!");
-                                return;
-                        }
-                    }
-                    else
-                    {
-                        direction = WorldEditManager.getLookingDirection(user);
-                    }
-                }
+                Direction direction = WorldEditManager.GetDirectionAndAmount(user, pDirectionAndAmount, out int amount);
+                if (direction == Direction.Unknown)
+                    return;
 
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
-                weud.ExpandSelection(direction.ToVec() * amount);
+                if (weud.ExpandSelection(direction.ToVec() * amount))
+                    user.Player.SendTemporaryMessage("Expanded selection " + amount + " " + direction);
+                else
+                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
+            }
+            catch (Exception e)
+            {
+                Log.WriteError(e.ToStringPretty());
+            }
+        }
 
-                user.Player.SendTemporaryMessage("Expanded " + amount + " " + direction);
+        [ChatCommand("/contract", "", ChatAuthorizationLevel.Admin)]
+        public static void Contract(User user, string pDirectionAndAmount = "1")
+        {
+            try
+            {
+                Direction direction = WorldEditManager.GetDirectionAndAmount(user, pDirectionAndAmount, out int amount);
+                if (direction == Direction.Unknown)
+                    return;
+
+                WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
+
+                if (weud.ExpandSelection(direction.Rotate180().ToVec() * -amount))
+                    user.Player.SendTemporaryMessage("Contracted selection " + amount + " " + direction);
+                else
+                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
+            }
+            catch (Exception e)
+            {
+                Log.WriteError(e.ToStringPretty());
+            }
+        }
+
+        [ChatCommand("/shift", "", ChatAuthorizationLevel.Admin)]
+        public static void Shift(User user, string pDirectionAndAmount = "1")
+        {
+            try
+            {
+                Direction direction = WorldEditManager.GetDirectionAndAmount(user, pDirectionAndAmount, out int amount);
+                if (direction == Direction.Unknown)
+                    return;
+
+                WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
+
+                if (weud.ShiftSelection(direction.ToVec() * amount))
+                    user.Player.SendTemporaryMessage("Shifted selection " + amount + " " + direction);
+                else
+                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
             }
             catch (Exception e)
             {
@@ -391,7 +464,7 @@ namespace Eco.Mods.WorldEdit
                 if (weud.SaveSelectionToClipboard(user))
                     user.Player.SendTemporaryMessage("Copy done.");
                 else
-                    user.Player.SendTemporaryMessage("Please set both Points with the Wand Tool first!");
+                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
             }
             catch (Exception e)
             {
@@ -406,7 +479,7 @@ namespace Eco.Mods.WorldEdit
             {
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
-                if (weud.LoadSelectionFromClipboard(user))
+                if (weud.LoadSelectionFromClipboard(user, weud))
                     user.Player.SendTemporaryMessage("Paste done.");
                 else
                     user.Player.SendTemporaryMessage("Please copy a selection first!");
@@ -463,13 +536,99 @@ namespace Eco.Mods.WorldEdit
                 if (weud.LoadClipboard(pFileName))
                     user.Player.SendTemporaryMessage("Import done. Use //paste");
                 else
-                    user.Player.SendTemporaryMessage("Schematic file not found! ");
+                    user.Player.SendTemporaryMessage("Schematic file not found!");
             }
             catch (Exception e)
             {
                 Log.WriteError(e.ToStringPretty());
             }
         }
+
+        [ChatCommand("/distr", "", ChatAuthorizationLevel.Admin)]
+        public static void Distr(User user, string pFileName)
+        {
+            try
+            {
+                WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
+
+                if (weud.FirstPos == null || weud.SecondPos == null)
+                {
+                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
+                    return;
+                }
+
+                var vectors = weud.GetSortedVectors();
+
+                Dictionary<string, long> mBlocks = new Dictionary<string, long>();
+
+                for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+                    for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
+                        for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                        {
+                            var pos = new Vector3i(x, y, z);
+                            var block = Eco.World.World.GetBlock(pos).GetType().ToString();
+
+                            long count;
+                            mBlocks.TryGetValue(block, out count);
+                            mBlocks[block] = count + 1;
+                        }
+
+                double amountBlocks = (vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z);
+
+                ChatManager.ServerMessageToPlayer("total blocks: " + amountBlocks, user, false, Shared.Services.DefaultChatTags.Notifications, Shared.Services.ChatCategory.Info);
+
+                foreach (var entry in mBlocks)
+                {
+                    string percent = (Math.Round((entry.Value / amountBlocks) * 100, 2)).ToString() + "%";
+                    string nameOfBlock = entry.Key.Substring(entry.Key.LastIndexOf(".") + 1);
+                    ChatManager.ServerMessageToPlayer(entry.Value.ToString().PadRight(6) + percent.PadRight(6) + "   " + nameOfBlock, user, false, Shared.Services.DefaultChatTags.Notifications, Shared.Services.ChatCategory.Info);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.WriteError(e.ToStringPretty());
+            }
+        }
+
+        /*
+        [ChatCommand("/grow", "", ChatAuthorizationLevel.Admin)]
+        public static void Grow(User user, string pFileName)
+        {
+            try
+            {
+                WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
+
+                if (weud.FirstPos == null || weud.SecondPos == null)
+                {
+                    user.Player.SendTemporaryMessage("Please set both Points with the Wand Tool first!");
+                    return;
+                }
+
+                var vectors = weud.GetSortedVectors();
+
+                for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+                    for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
+                        for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                        {
+                            var pos = new Vector3i(x, y, z);
+                            var block = Eco.World.World.GetBlock(pos);
+
+                            if (block is PlantBlock)
+                            {
+                                var pb = block as PlantBlock;
+                                pb.Plant.GrowthPercent = 1;
+                                pb.Plant.YieldPercent = 1;
+                                pb.Plant.Tick();
+                            }
+
+                        }
+
+            }
+            catch (Exception e)
+            {
+                Log.WriteError(e.ToStringPretty());
+            }
+        }*/
 
     }
 }

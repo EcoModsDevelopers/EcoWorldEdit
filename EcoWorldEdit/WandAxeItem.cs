@@ -14,7 +14,6 @@ namespace Eco.Mods.WorldEdit
     using Eco.Shared.Items;
     using Eco.World;
     using Eco.World.Blocks;
-    using Eco.Mods.TechTree;
     using Eco.Shared.Serialization;
     using Eco.Shared.Utils;
     using Eco.Core.Utils;
