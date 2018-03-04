@@ -76,7 +76,7 @@ namespace Eco.Mods.WorldEdit
                         for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
                         {
                             var pos = new Vector3i(x, y, z);
-                            weud.addBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
+                            weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
                             WorldEditManager.SetBlock(blockType, pos);
                         }
 
@@ -149,7 +149,7 @@ namespace Eco.Mods.WorldEdit
 
                                 if (block != null && block.GetType() == blockTypeToFind)
                                 {
-                                    weud.addBlockChangedEntry(block, pos);
+                                    weud.AddBlockChangedEntry(block, pos);
                                     WorldEditManager.SetBlock(blockTypeToReplace, pos);
                                     changedBlocks++;
                                 }
@@ -164,7 +164,7 @@ namespace Eco.Mods.WorldEdit
 
                                 if (block != null && block.GetType() != typeof(EmptyBlock))
                                 {
-                                    weud.addBlockChangedEntry(block, pos);
+                                    weud.AddBlockChangedEntry(block, pos);
                                     WorldEditManager.SetBlock(blockTypeToFind, pos);
                                     changedBlocks++;
                                 }
@@ -206,7 +206,7 @@ namespace Eco.Mods.WorldEdit
                     for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
                     {
                         var pos = new Vector3i(x, y, vectors.Lower.Z);
-                        weud.addBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
+                        weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
                         WorldEditManager.SetBlock(blockType, pos);
                     }
 
@@ -214,7 +214,7 @@ namespace Eco.Mods.WorldEdit
                     for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
                     {
                         var pos = new Vector3i(x, y, vectors.Higher.Z - 1);
-                        weud.addBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
+                        weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
                         WorldEditManager.SetBlock(blockType, pos);
                     }
 
@@ -222,7 +222,7 @@ namespace Eco.Mods.WorldEdit
                     for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
                     {
                         var pos = new Vector3i(vectors.Lower.X, y, z);
-                        weud.addBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
+                        weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
                         WorldEditManager.SetBlock(blockType, pos);
                     }
 
@@ -230,7 +230,7 @@ namespace Eco.Mods.WorldEdit
                     for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
                     {
                         var pos = new Vector3i(vectors.Higher.X - 1, y, z);
-                        weud.addBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
+                        weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
                         WorldEditManager.SetBlock(blockType, pos);
                     }
 
@@ -277,9 +277,9 @@ namespace Eco.Mods.WorldEdit
                             {
                                 var pos = new Vector3i(x, y, z);
 
-                                weud.addBlockChangedEntry(Eco.World.World.GetBlock(pos + offset), pos + offset);
+                                weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos + offset), pos + offset);
                                 var sourceBlock = Eco.World.World.GetBlock(pos);
-                                WorldEditManager.SetBlock(sourceBlock.GetType(), pos + offset, session, sourceBlock);
+                                WorldEditManager.SetBlock(sourceBlock.GetType(), pos + offset, session, pos, sourceBlock);
                             }
                 }
 
@@ -318,11 +318,24 @@ namespace Eco.Mods.WorldEdit
 
                 Vector3i offset = dir.ToVec() * amount;
 
-           //     if (dir == Direction.Up)
-          //          offset *= vectors.Higher.Y - vectors.Lower.Y;
+                //     if (dir == Direction.Up)
+                //          offset *= vectors.Higher.Y - vectors.Lower.Y;
 
+
+                Action<int, int, int> action = (int x, int y, int z) =>
+                  {
+                      var pos = new Vector3i(x, y, z);
+
+                      weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
+                      weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos + offset), pos + offset);
+
+                      var sourceBlock = Eco.World.World.GetBlock(pos);
+                      WorldEditManager.SetBlock(sourceBlock.GetType(), pos + offset, session, pos, sourceBlock);
+                      WorldEditManager.SetBlock(typeof(EmptyBlock), pos, session);
+                  };
+
+                /*
                 for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
-
                     for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
                         for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
                         {
@@ -330,16 +343,24 @@ namespace Eco.Mods.WorldEdit
                             if (dir == Direction.Up)
                                 y2 = vectors.Lower.Y + (vectors.Higher.Y - 1 - y);
 
-                            var pos = new Vector3i(x, y2, z);
-
-                            weud.addBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
-                            weud.addBlockChangedEntry(Eco.World.World.GetBlock(pos + offset), pos + offset);
-
-                            var sourceBlock = Eco.World.World.GetBlock(pos);
-                            WorldEditManager.SetBlock(sourceBlock.GetType(), pos + offset, session, sourceBlock);
-                            WorldEditManager.SetBlock(typeof(EmptyBlock), pos, session);
                         }
+                        */
 
+
+                if (dir == Direction.Left || dir == Direction.Back || dir == Direction.Down)
+                {
+                    for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+                        for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
+                            for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                                action.Invoke(x, y, z);
+                }
+                else
+                {
+                    for (int x = vectors.Higher.X - 1; x >= vectors.Lower.X; x--)
+                        for (int y = vectors.Higher.Y - 1; y >= vectors.Lower.Y; y--)
+                            for (int z = vectors.Higher.Z - 1; z >= vectors.Lower.Z; z--)
+                                action.Invoke(x, y, z);
+                }
 
                 int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z)) * amount;
 
@@ -384,7 +405,7 @@ namespace Eco.Mods.WorldEdit
 
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
-                if (weud.ExpandSelection(direction.Rotate180().ToVec() * -amount))
+                if (weud.ExpandSelection(direction.ToVec() * -amount, true))
                     user.Player.SendTemporaryMessage("Contracted selection " + amount + " " + direction);
                 else
                     user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");

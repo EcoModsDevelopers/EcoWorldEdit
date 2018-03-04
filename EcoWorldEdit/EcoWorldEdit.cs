@@ -8,5 +8,10 @@ namespace EcoWorldEdit
         {
             return "";
         }
+
+        public override string ToString()
+        {
+            return "EcoWorldEdit";
+        }
     }
 }

@@ -24,13 +24,11 @@ namespace Eco.Mods.WorldEdit
         public const string mSchematicPath = "./Schematics/";
         public Vector3i? FirstPos;
         public Vector3i? SecondPos;
-
-        //     private bool mUndoDone = false;
-
+           
         //multiple undos with circular buffer?
         private Stack<WorldEditBlock> mLastCommandBlocks = null;
 
-        private List<WorldEditBlock> mClipboard = new List<WorldEditBlock>(); //Maybe "better" type?
+        private List<WorldEditBlock> mClipboard = new List<WorldEditBlock>();
 
         private Vector3i mUserClipboardPosition;
 
@@ -61,15 +59,19 @@ namespace Eco.Mods.WorldEdit
             return new SortedVectorPair(lower, higher);
         }
 
-        public bool ExpandSelection(Vector3i pDirection)
+        public bool ExpandSelection(Vector3i pDirection, bool pContract = false)
         {
             if (!FirstPos.HasValue || !SecondPos.HasValue)
                 return false;
 
             var firstResult = SumAllAxis(pDirection * FirstPos.Value);
             var secondResult = SumAllAxis(pDirection * SecondPos.Value);
+            
+            bool useFirst = firstResult > secondResult;
+            if (pContract)
+                useFirst = !useFirst;
 
-            if (Math.Abs(firstResult) > Math.Abs(secondResult))
+            if (useFirst)
                 FirstPos = FirstPos + pDirection;
             else
                 SecondPos = SecondPos + pDirection;
@@ -99,9 +101,10 @@ namespace Eco.Mods.WorldEdit
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void addBlockChangedEntry(Block pBlock, Vector3i pPosition)
+        public void AddBlockChangedEntry(Block pBlock, Vector3i pPosition, Vector3i? pSourcePosition = null)
         {
-            mLastCommandBlocks.Push(new WorldEditBlock(pBlock, pPosition));
+            pSourcePosition = pSourcePosition ?? pPosition;
+            mLastCommandBlocks.Push(WorldEditBlock.CreateNew(pBlock, pPosition, pSourcePosition));
         }
 
         public bool Undo()
@@ -109,9 +112,11 @@ namespace Eco.Mods.WorldEdit
             if (mLastCommandBlocks == null)
                 return false;
 
+            UserSession session = GetNewSession();
+
             foreach (var entry in mLastCommandBlocks)
             {
-                WorldEditManager.SetBlock(entry);
+                WorldEditManager.SetBlock(entry, session);
             }
             return true;
         }
@@ -134,7 +139,7 @@ namespace Eco.Mods.WorldEdit
                         var pos = new Vector3i(x, y, z);
 
                         //pos - mUserClipboardPosition: "Spitze minus Anfang"
-                        mClipboard.Add(new WorldEditBlock(Eco.World.World.GetBlock(pos), pos - mUserClipboardPosition));
+                        mClipboard.Add(WorldEditBlock.CreateNew(Eco.World.World.GetBlock(pos), pos - mUserClipboardPosition, pos));
                     }
             return true;
         }
@@ -154,8 +159,8 @@ namespace Eco.Mods.WorldEdit
                 var web = entry.Clone();
                 web.Position += currentPos;
 
-                addBlockChangedEntry(Eco.World.World.GetBlock(web.Position), web.Position);
-                WorldEditManager.SetBlock(web.Type, web.Position, session, null, web.Data);
+                AddBlockChangedEntry(Eco.World.World.GetBlock(web.Position), web.Position);
+                WorldEditManager.SetBlock(web.Type, web.Position, session, null, null, web.Data);
             }
             return true;
         }

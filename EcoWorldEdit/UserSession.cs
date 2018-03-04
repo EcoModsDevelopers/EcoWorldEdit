@@ -8,6 +8,6 @@ namespace EcoWorldEdit
 {
     public class UserSession
     {
-        public List<Guid> mCreatedObjects = new List<Guid>();
+        //Maybe this is useful some day...
     }
 }

@@ -69,33 +69,34 @@ namespace Eco.Mods.WorldEdit
             return blockType;
         }
 
-        //an idea was to move this method to WorldEditUserData, but then maybe findBlock must be called twice
-        public static Block WorldSetBlock(Type pType, Vector3i pVector, params object[] pArgs)
+        public static void SetBlock(WorldEditBlock pBlock, UserSession pSession)
         {
-            if (pType == null || pType == typeof(EmptyBlock))
-            {
-                Eco.World.World.DeleteBlock(pVector);
-                return null;
-            }
-            else
-                return Eco.World.World.SetBlock(pType, pVector, pArgs);
+            SetBlock(pBlock.Type, pBlock.Position, pSession, null, null, pBlock.Data);
         }
 
-        public static void SetBlock(WorldEditBlock pBlock)
+        public static void SetBlock(Type pType, Vector3i pPosition, UserSession pSession = null, Vector3i? pSourcePosition = null, Block pSourceBlock = null, byte[] pData = null)
         {
-            SetBlock(pBlock.Type, pBlock.Position, null, null, pBlock.Data);
-        }
-
-        public static void SetBlock(Type pType, Vector3i pPosition, UserSession pSession = null, Block pSourceBlock = null, byte[] pData = null)
-        {
-            if (pType == null)
+            if (pType == null || pType.DerivesFrom<PickupableBlock>())
                 pType = typeof(EmptyBlock);
+
+            WorldObjectBlock worldObjectBlock = Eco.World.World.GetBlock(pPosition) as WorldObjectBlock;
+
+            if (worldObjectBlock != null)
+            {
+                if (worldObjectBlock.WorldObjectHandle.Object.Position3i == pPosition)
+                {
+                    worldObjectBlock.WorldObjectHandle.Object.Destroy();
+                }
+            }
 
             var constuctor = pType.GetConstructor(Type.EmptyTypes);
 
             if (constuctor != null)
             {
-                WorldSetBlock(pType, pPosition);
+                if (pType == typeof(EmptyBlock))
+                    Eco.World.World.DeleteBlock(pPosition);
+                else
+                    Eco.World.World.SetBlock(pType, pPosition);
                 return;
             }
 
@@ -127,20 +128,21 @@ namespace Eco.Mods.WorldEdit
                     else
                     {
                         ps = GetPlantSpecies(pType);
+
+                        if(pSourceBlock != null)                       
+                            pb = ((PlantBlock)pSourceBlock).Plant;
                     }
 
-                    var newplant = EcoSim.PlantSim.SpawnPlant(ps, pPosition);
+                    Plant newplant = EcoSim.PlantSim.SpawnPlant(ps, pPosition);
 
                     if (pb != null)
                     {
-                        PropertyInfo property = newplant.GetType().GetProperty("BornTime");
-                        property.SetValue(newplant, pb.BornTime);
-
                         newplant.YieldPercent = pb.YieldPercent;
                         newplant.Dead = pb.Dead;
                         newplant.DeadType = pb.DeadType;
                         newplant.GrowthPercent = pb.GrowthPercent;
-                        newplant.TreeNode = pb.TreeNode;
+                        newplant.DeathTime = pb.DeathTime;
+                        newplant.Tended = pb.Tended;
                     }
 
                     return;
@@ -149,37 +151,37 @@ namespace Eco.Mods.WorldEdit
                 Log.WriteLine("Unknown Type: " + pType);
             }
 
-
             types[0] = typeof(WorldObject);
             constuctor = pType.GetConstructor(types);
 
             if (constuctor != null)
             {
-                WorldObjectBlock objectBlock = null;
+                WorldObject wObject = null;
 
                 if (pSourceBlock != null)
                 {
-                    objectBlock = pSourceBlock as WorldObjectBlock;
+                    wObject = ((WorldObjectBlock)pSourceBlock).WorldObjectHandle.Object;
+
+                    //if this is not the "main block" of an object do nothing
+                    if (wObject.Position3i != pSourcePosition.Value)
+                        return;
+
                 }
                 else if (pData != null)
                 {
                     MemoryStream ms = new MemoryStream(pData);
                     var obj = EcoSerializer.Deserialize(ms);
 
-                    if (obj is WorldObjectBlock)
+                    if (obj is WorldObject)
                     {
-                        objectBlock = obj as WorldObjectBlock;
+                        wObject = obj as WorldObject;
                     }
                     else
                         throw new InvalidOperationException("obj is not WorldObjectBlock");
                 }
 
-                WorldObject wObject = objectBlock.WorldObjectHandle.Object;
-
-                if (pSession.mCreatedObjects.Contains(wObject.ObjectID))
+                if (wObject == null)
                     return;
-
-                pSession.mCreatedObjects.Add(wObject.ObjectID);
 
                 WorldObject newObject = (WorldObject)Activator.CreateInstance(wObject.GetType());
                 newObject = WorldObjectManager.Add(newObject, wObject.Creator.User, pPosition, wObject.Rotation);
@@ -190,9 +192,11 @@ namespace Eco.Mods.WorldEdit
 
                     if (newSC != null)
                     {
-                        PublicStorageComponent oldPSC = wObject.GetComponent<PublicStorageComponent>();
+                        StorageComponent oldPSC = wObject.GetComponent<StorageComponent>();
                         newSC.Inventory.AddItems(oldPSC.Inventory.Stacks);
+                        //    newSC.Inventory.OnChanged.Invoke(null);
                     }
+
                 }
 
                 {

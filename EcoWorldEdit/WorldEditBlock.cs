@@ -14,42 +14,47 @@ using System.Threading.Tasks;
 
 namespace Eco.Mods.WorldEdit
 {
-    [Serializable]
     [Serialized]
-    public class WorldEditBlock //TODO change to struct
+    public struct WorldEditBlock
     {
+        public static WorldEditBlock CreateNew(Block pBlock, Vector3i pPosition, Vector3i? pSourcePosition)
+        {
+            WorldEditBlock web = new WorldEditBlock();
+            web.Position = pPosition;
+            web.Type = pBlock.GetType();
+
+            var constuctor = web.Type.GetConstructor(Type.EmptyTypes);
+
+            if (constuctor == null)
+            {
+                if (pBlock is PlantBlock)
+                    web.Data = EcoSerializer.Serialize(((PlantBlock)pBlock).Plant).ToArray();
+
+                if (pBlock is WorldObjectBlock)
+                {
+                    WorldObjectBlock wob = (WorldObjectBlock)pBlock;
+
+                    if (wob.WorldObjectHandle.Object.Position3i == pSourcePosition)
+                    {
+                        web.Data = EcoSerializer.Serialize(wob.WorldObjectHandle.Object).ToArray();
+                    }
+                }
+            }
+
+            return web;
+        }
+
         [Serialized] public Vector3i Position { get; set; }
 
         [Serialized] public byte[] Data { get; set; }
 
         [Serialized] public Type Type;
 
-        public WorldEditBlock()
-        {
-        }
-
-        public WorldEditBlock(Type pType, Vector3i pPosition, byte[] pData) //: this()  /TODO change to struct
+        public WorldEditBlock(Type pType, Vector3i pPosition, byte[] pData) : this()
         {
             Type = pType;
             Position = pPosition;
             Data = pData;
-        }
-
-        public WorldEditBlock(Block pBlock, Vector3i pPosition) // : this() /TODO change to struct
-        {
-            Type = pBlock.GetType();
-            Position = pPosition;
-
-            var constuctor = Type.GetConstructor(Type.EmptyTypes);
-
-            if (constuctor == null)
-            {
-                if (pBlock is PlantBlock)
-                    Data = EcoSerializer.Serialize(((PlantBlock)pBlock).Plant).ToArray();
-
-                if (pBlock is WorldObjectBlock)
-                    Data = EcoSerializer.Serialize(pBlock).ToArray();
-            }
         }
 
         public WorldEditBlock Clone()
@@ -58,26 +63,4 @@ namespace Eco.Mods.WorldEdit
         }
     }
 
-    /*
-    public class WorldEditBlockSerializer : ISerializer
-    {
-        public Type Type => typeof(WorldEditBlock);
-        public string SchemaType => "worldeditblock";
-        public int ID { get; set; }
-        public void Encode(BinaryWriter writer, object instance)
-        {
-            var vector = (Vector3i)instance;
-            writer.EncodeZigZag(vector.x);
-            writer.EncodeZigZag(vector.y);
-            writer.EncodeZigZag(vector.z);
-        }
-        public object Decode(BinaryReader reader) => new Vector3i(reader.DecodeIntZigZag(), reader.DecodeIntZigZag(), reader.DecodeIntZigZag());
-        public void Skip(BinaryReader reader)
-        {
-            reader.DecodeIntZigZag(); // x
-            reader.DecodeIntZigZag(); // y
-            reader.DecodeIntZigZag(); // z
-        }
-        public override string ToString() => "vector3i";
-    }*/
 }
