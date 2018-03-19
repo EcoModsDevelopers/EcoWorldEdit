@@ -129,7 +129,7 @@ namespace Eco.Mods.WorldEdit
                     {
                         ps = GetPlantSpecies(pType);
 
-                        if(pSourceBlock != null)                       
+                        if (pSourceBlock != null)
                             pb = ((PlantBlock)pSourceBlock).Plant;
                     }
 
@@ -249,7 +249,7 @@ namespace Eco.Mods.WorldEdit
                     return Direction.Down;
 
                 default:
-                    pUser.Player.SendTemporaryError("Unknown direction!");
+                    pUser.Player.SendTemporaryError($"Unknown direction!");
                     return Direction.Unknown;
             }
         }
@@ -261,7 +261,7 @@ namespace Eco.Mods.WorldEdit
 
             if (!int.TryParse(splitted[0], out pAmount))
             {
-                pUser.Player.SendTemporaryError("Please provide an amount first");
+                pUser.Player.SendTemporaryError($"Please provide an amount first");
                 return Direction.Unknown;
             }
 

@@ -55,7 +55,7 @@ namespace Eco.Mods.WorldEdit
 
                 if (weud.FirstPos == null || weud.SecondPos == null)
                 {
-                    user.Player.SendTemporaryMessage("Please set both Points with the Wand Tool first!");
+                    user.Player.SendTemporaryMessage($"Please set both Points with the Wand Tool first!");
                     return;
                 }
 
@@ -63,7 +63,7 @@ namespace Eco.Mods.WorldEdit
 
                 if (blockType == null)
                 {
-                    user.Player.SendTemporaryMessage("No BlockType with name " + pTypeName + " found!");
+                    user.Player.SendTemporaryMessage($"No BlockType with name {pTypeName} found!");
                     return;
                 }
 
@@ -82,7 +82,7 @@ namespace Eco.Mods.WorldEdit
 
                 int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z));
 
-                user.Player.SendTemporaryMessage(changedBlocks + " blocks changed.");
+                user.Player.SendTemporaryMessage($"{changedBlocks} blocks changed.");
             }
             catch (Exception e)
             {
@@ -107,14 +107,14 @@ namespace Eco.Mods.WorldEdit
 
                 if (weud.FirstPos == null || weud.SecondPos == null)
                 {
-                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
+                    user.Player.SendTemporaryMessage($"Please set both points with the Wand Tool first!");
                     return;
                 }
 
                 Type blockTypeToFind = WorldEditManager.FindBlockTypeFromBlockName(toFind);
                 if (blockTypeToFind == null)
                 {
-                    user.Player.SendTemporaryMessage("No BlockType with name " + toFind + " found!");
+                    user.Player.SendTemporaryMessage($"No BlockType with name {toFind} found!");
                     return;
                 }
 
@@ -125,7 +125,7 @@ namespace Eco.Mods.WorldEdit
                     blockTypeToReplace = WorldEditManager.FindBlockTypeFromBlockName(toReplace);
                     if (blockTypeToReplace == null)
                     {
-                        user.Player.SendTemporaryMessage("No BlockType with name " + toReplace + " found!");
+                        user.Player.SendTemporaryMessage($"No BlockType with name { toReplace } found!");
                         return;
                     }
                 }
@@ -170,7 +170,7 @@ namespace Eco.Mods.WorldEdit
                                 }
                             }
 
-                user.Player.SendTemporaryMessage(changedBlocks + " blocks changed.");
+                user.Player.SendTemporaryMessage($"{changedBlocks} blocks changed.");
             }
             catch (Exception e)
             {
@@ -187,7 +187,7 @@ namespace Eco.Mods.WorldEdit
 
                 if (weud.FirstPos == null || weud.SecondPos == null)
                 {
-                    user.Player.SendTemporaryMessage("Please set both Points with the Wand Tool first!");
+                    user.Player.SendTemporaryMessage($"Please set both Points with the Wand Tool first!");
                     return;
                 }
 
@@ -195,7 +195,7 @@ namespace Eco.Mods.WorldEdit
 
                 if (blockType == null)
                 {
-                    user.Player.SendTemporaryMessage("No BlockType with name " + pTypeName + " found!");
+                    user.Player.SendTemporaryMessage($"No BlockType with name { pTypeName } found!");
                     return;
                 }
 
@@ -239,7 +239,7 @@ namespace Eco.Mods.WorldEdit
                 if (changedBlocks == 0) //maybe better math?
                     changedBlocks = 1;
 
-                user.Player.SendTemporaryMessage("Around " + changedBlocks + " blocks changed.");
+                user.Player.SendTemporaryMessage($"Around { changedBlocks } blocks changed.");
             }
             catch (Exception e)
             {
@@ -256,7 +256,7 @@ namespace Eco.Mods.WorldEdit
 
                 if (weud.FirstPos == null || weud.SecondPos == null)
                 {
-                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
+                    user.Player.SendTemporaryMessage($"Please set both points with the Wand Tool first!");
                     return;
                 }
 
@@ -285,7 +285,7 @@ namespace Eco.Mods.WorldEdit
 
                 int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z)) * amount;
 
-                user.Player.SendTemporaryMessage(changedBlocks + " blocks changed.");
+                user.Player.SendTemporaryMessage($"{changedBlocks} blocks changed.");
             }
             catch (Exception e)
             {
@@ -304,7 +304,7 @@ namespace Eco.Mods.WorldEdit
 
                 if (weud.FirstPos == null || weud.SecondPos == null)
                 {
-                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
+                    user.Player.SendTemporaryMessage($"Please set both points with the Wand Tool first!");
                     return;
                 }
 
@@ -364,7 +364,7 @@ namespace Eco.Mods.WorldEdit
 
                 int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z)) * amount;
 
-                user.Player.SendTemporaryMessage(changedBlocks + " blocks moved.");
+                user.Player.SendTemporaryMessage($"{changedBlocks} blocks moved.");
             }
             catch (Exception e)
             {
@@ -384,9 +384,9 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
                 if (weud.ExpandSelection(direction.ToVec() * amount))
-                    user.Player.SendTemporaryMessage("Expanded selection " + amount + " " + direction);
+                    user.Player.SendTemporaryMessage($"Expanded selection {amount} direction");
                 else
-                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
+                    user.Player.SendTemporaryMessage($"Please set both points with the Wand Tool first!");
             }
             catch (Exception e)
             {
@@ -406,9 +406,9 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
                 if (weud.ExpandSelection(direction.ToVec() * -amount, true))
-                    user.Player.SendTemporaryMessage("Contracted selection " + amount + " " + direction);
+                    user.Player.SendTemporaryMessage($"Contracted selection {amount} {direction}");
                 else
-                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
+                    user.Player.SendTemporaryMessage($"Please set both points with the Wand Tool first!");
             }
             catch (Exception e)
             {
@@ -428,9 +428,9 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
                 if (weud.ShiftSelection(direction.ToVec() * amount))
-                    user.Player.SendTemporaryMessage("Shifted selection " + amount + " " + direction);
+                    user.Player.SendTemporaryMessage($"Shifted selection {amount} {direction}");
                 else
-                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
+                    user.Player.SendTemporaryMessage($"Please set both points with the Wand Tool first!");
             }
             catch (Exception e)
             {
@@ -464,9 +464,9 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
                 if (weud.Undo())
-                    user.Player.SendTemporaryMessage("Undo done.");
+                    user.Player.SendTemporaryMessage($"Undo done.");
                 else
-                    user.Player.SendTemporaryMessage("You can't use undo right now!");
+                    user.Player.SendTemporaryMessage($"You can't use undo right now!");
             }
             catch (Exception e)
             {
@@ -483,9 +483,9 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
                 if (weud.SaveSelectionToClipboard(user))
-                    user.Player.SendTemporaryMessage("Copy done.");
+                    user.Player.SendTemporaryMessage($"Copy done.");
                 else
-                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
+                    user.Player.SendTemporaryMessage($"Please set both points with the Wand Tool first!");
             }
             catch (Exception e)
             {
@@ -501,9 +501,9 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
                 if (weud.LoadSelectionFromClipboard(user, weud))
-                    user.Player.SendTemporaryMessage("Paste done.");
+                    user.Player.SendTemporaryMessage($"Paste done.");
                 else
-                    user.Player.SendTemporaryMessage("Please copy a selection first!");
+                    user.Player.SendTemporaryMessage($"Please copy a selection first!");
             }
             catch (Exception e)
             {
@@ -519,9 +519,9 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
                 if (weud.RotateClipboard(pDegree))
-                    user.Player.SendTemporaryMessage("Rotation in clipboard done.");
+                    user.Player.SendTemporaryMessage($"Rotation in clipboard done.");
                 else
-                    user.Player.SendTemporaryMessage("Please copy a selection first!");
+                    user.Player.SendTemporaryMessage($"Please copy a selection first!");
             }
             catch (Exception e)
             {
@@ -537,9 +537,9 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
                 if (weud.SaveClipboard(pFileName))
-                    user.Player.SendTemporaryMessage("Export done.");
+                    user.Player.SendTemporaryMessage($"Export done.");
                 else
-                    user.Player.SendTemporaryMessage("Please copy a selection first!");
+                    user.Player.SendTemporaryMessage($"Please copy a selection first!");
             }
             catch (Exception e)
             {
@@ -555,9 +555,9 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
                 if (weud.LoadClipboard(pFileName))
-                    user.Player.SendTemporaryMessage("Import done. Use //paste");
+                    user.Player.SendTemporaryMessage($"Import done. Use //paste");
                 else
-                    user.Player.SendTemporaryMessage("Schematic file not found!");
+                    user.Player.SendTemporaryMessage($"Schematic file not found!");
             }
             catch (Exception e)
             {
@@ -574,7 +574,7 @@ namespace Eco.Mods.WorldEdit
 
                 if (weud.FirstPos == null || weud.SecondPos == null)
                 {
-                    user.Player.SendTemporaryMessage("Please set both points with the Wand Tool first!");
+                    user.Player.SendTemporaryMessage($"Please set both points with the Wand Tool first!");
                     return;
                 }
 
@@ -596,13 +596,13 @@ namespace Eco.Mods.WorldEdit
 
                 double amountBlocks = (vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z);
 
-                ChatManager.ServerMessageToPlayer("total blocks: " + amountBlocks, user, false, Shared.Services.DefaultChatTags.Notifications, Shared.Services.ChatCategory.Info);
+                ChatManager.ServerMessageToPlayer($"total blocks: {amountBlocks}", user, false, Shared.Services.DefaultChatTags.Notifications, Shared.Services.ChatCategory.Info);
 
                 foreach (var entry in mBlocks)
                 {
                     string percent = (Math.Round((entry.Value / amountBlocks) * 100, 2)).ToString() + "%";
                     string nameOfBlock = entry.Key.Substring(entry.Key.LastIndexOf(".") + 1);
-                    ChatManager.ServerMessageToPlayer(entry.Value.ToString().PadRight(6) + percent.PadRight(6) + "   " + nameOfBlock, user, false, Shared.Services.DefaultChatTags.Notifications, Shared.Services.ChatCategory.Info);
+                    ChatManager.ServerMessageToPlayer($"{entry.Value.ToString().PadRight(6)} {percent.PadRight(6)} {nameOfBlock}", user, false, Shared.Services.DefaultChatTags.Notifications, Shared.Services.ChatCategory.Info);
                 }
             }
             catch (Exception e)

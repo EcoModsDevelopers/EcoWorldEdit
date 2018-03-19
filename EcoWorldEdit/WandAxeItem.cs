@@ -44,7 +44,7 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(context.Player.User.Name);
                 weud.FirstPos = pos;
 
-                context.Player.SendTemporaryMessage("First Position set to (" + pos.x + ", " + pos.y + ", " + pos.z + ")");
+                context.Player.SendTemporaryMessage($"First Position set to ({pos.x}, {pos.y}, {pos.z})");
             }
             catch (Exception e)
             {
@@ -65,7 +65,7 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(context.Player.User.Name);
                 weud.SecondPos = pos;
 
-                context.Player.SendTemporaryMessage("Second Position set to (" + pos.x + ", " + pos.y + ", " + pos.z + ")");
+                context.Player.SendTemporaryMessage($"Second Position set to ({pos.x}, {pos.y}, {pos.z})");
             }
             catch (Exception e)
             {
@@ -78,7 +78,7 @@ namespace Eco.Mods.WorldEdit
         {
             return true;
         }
-        
+
         protected new Result PlayerPlaceBlock<T>(Vector3i blockPosition, Player player, bool replaceBlock, float calorieMultiplier = 1)
         {
             return Result.Succeeded;
@@ -93,7 +93,7 @@ namespace Eco.Mods.WorldEdit
         {
             return Result.Succeeded;
         }
-        
+
         protected new void BurnCalories(Player player, float calorieMultiplier = 1)
         {
         }
