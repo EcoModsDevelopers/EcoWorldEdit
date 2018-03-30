@@ -35,6 +35,7 @@ namespace Eco.Mods.WorldEdit
 
         protected static Dictionary<string, WorldEditUserData> mUserData = new Dictionary<string, WorldEditUserData>();
 
+
         public static ItemStack getWandItemStack()
         {
             Item item = Item.Get("WandAxeItem");

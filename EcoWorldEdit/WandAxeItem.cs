@@ -25,12 +25,17 @@ namespace Eco.Mods.WorldEdit
     [Category("Hidden")]
     public partial class WandAxeItem : ToolItem
     {
+        private static IDynamicValue skilledRepairCost = new ConstantValue(1);
+
+
         public override string FriendlyName { get { return "Wand Tool"; } }
         public override string Description { get { return "Does magical World Edit things"; } }
 
         public override string LeftActionDescription { get { return string.Empty; } }
 
         public override ClientPredictedBlockAction LeftAction { get { return ClientPredictedBlockAction.None; } }
+
+        public override IDynamicValue SkilledRepairCost => skilledRepairCost;
 
         public override InteractResult OnActLeft(InteractionContext context)
         {
@@ -41,7 +46,14 @@ namespace Eco.Mods.WorldEdit
 
                 var pos = context.BlockPosition.Value;
 
-                WorldEditUserData weud = WorldEditManager.GetUserData(context.Player.User.Name);
+                pos.X = pos.X < 0 ? pos.X + Shared.Voxel.World.VoxelSize.X : pos.X;
+                pos.Z = pos.Z < 0 ? pos.Z + Shared.Voxel.World.VoxelSize.Z : pos.Z;
+
+                pos.X = pos.X % Shared.Voxel.World.VoxelSize.X;
+                pos.Z = pos.Z % Shared.Voxel.World.VoxelSize.Z;
+                
+
+               WorldEditUserData weud = WorldEditManager.GetUserData(context.Player.User.Name);
                 weud.FirstPos = pos;
 
                 context.Player.SendTemporaryMessage($"First Position set to ({pos.x}, {pos.y}, {pos.z})");
@@ -61,6 +73,12 @@ namespace Eco.Mods.WorldEdit
                     return InteractResult.Success;
 
                 var pos = context.BlockPosition.Value;
+                
+                pos.X = pos.X < 0 ? pos.X + Shared.Voxel.World.VoxelSize.X : pos.X;
+                pos.Z = pos.Z < 0 ? pos.Z + Shared.Voxel.World.VoxelSize.Z : pos.Z;
+
+                pos.X = pos.X % Shared.Voxel.World.VoxelSize.X;
+                pos.Z = pos.Z % Shared.Voxel.World.VoxelSize.Z;
 
                 WorldEditUserData weud = WorldEditManager.GetUserData(context.Player.User.Name);
                 weud.SecondPos = pos;

@@ -71,9 +71,9 @@ namespace Eco.Mods.WorldEdit
 
                 weud.StartEditingBlocks();
 
-                for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+                for (int x = vectors.Lower.X; x != vectors.Higher.X; x = (x + 1) % Shared.Voxel.World.VoxelSize.X)
                     for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
-                        for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                        for (int z = vectors.Lower.Z; z != vectors.Higher.Z; z = (z + 1) % Shared.Voxel.World.VoxelSize.Z)
                         {
                             var pos = new Vector3i(x, y, z);
                             weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
@@ -140,9 +140,9 @@ namespace Eco.Mods.WorldEdit
                 weud.StartEditingBlocks();
 
                 if (toReplace != string.Empty)
-                    for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+                    for (int x = vectors.Lower.X; x != vectors.Higher.X; x = (x + 1) % Shared.Voxel.World.VoxelSize.X)
                         for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
-                            for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                            for (int z = vectors.Lower.Z; z != vectors.Higher.Z; z = (z + 1) % Shared.Voxel.World.VoxelSize.Z)
                             {
                                 var pos = new Vector3i(x, y, z);
                                 var block = Eco.World.World.GetBlock(pos);
@@ -155,9 +155,9 @@ namespace Eco.Mods.WorldEdit
                                 }
                             }
                 else
-                    for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+                    for (int x = vectors.Lower.X; x != vectors.Higher.X; x = (x + 1) % Shared.Voxel.World.VoxelSize.X)
                         for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
-                            for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                            for (int z = vectors.Lower.Z; z != vectors.Higher.Z; z = (z + 1) % Shared.Voxel.World.VoxelSize.Z)
                             {
                                 var pos = new Vector3i(x, y, z);
                                 var block = Eco.World.World.GetBlock(pos);
@@ -199,47 +199,48 @@ namespace Eco.Mods.WorldEdit
                     return;
                 }
 
-                var vectors = weud.GetSortedVectors();
+                /*         var vectors = weud.GetSortedVectors();
 
-                weud.StartEditingBlocks();
-                for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
-                    for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
-                    {
-                        var pos = new Vector3i(x, y, vectors.Lower.Z);
-                        weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
-                        WorldEditManager.SetBlock(blockType, pos);
-                    }
+                         weud.StartEditingBlocks();
+                         for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+                             for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
+                             {
+                                 var pos = new Vector3i(x, y, vectors.Lower.Z);
+                                 weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
+                                 WorldEditManager.SetBlock(blockType, pos);
+                             }
 
-                for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
-                    for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
-                    {
-                        var pos = new Vector3i(x, y, vectors.Higher.Z - 1);
-                        weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
-                        WorldEditManager.SetBlock(blockType, pos);
-                    }
+                         for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+                             for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
+                             {
+                                 var pos = new Vector3i(x, y, vectors.Higher.Z - 1);
+                                 weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
+                                 WorldEditManager.SetBlock(blockType, pos);
+                             }
 
-                for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
-                    for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
-                    {
-                        var pos = new Vector3i(vectors.Lower.X, y, z);
-                        weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
-                        WorldEditManager.SetBlock(blockType, pos);
-                    }
+                         for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                             for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
+                             {
+                                 var pos = new Vector3i(vectors.Lower.X, y, z);
+                                 weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
+                                 WorldEditManager.SetBlock(blockType, pos);
+                             }
 
-                for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
-                    for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
-                    {
-                        var pos = new Vector3i(vectors.Higher.X - 1, y, z);
-                        weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
-                        WorldEditManager.SetBlock(blockType, pos);
-                    }
+                         for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                             for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
+                             {
+                                 var pos = new Vector3i(vectors.Higher.X - 1, y, z);
+                                 weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
+                                 WorldEditManager.SetBlock(blockType, pos);
+                             }
 
-                int changedBlocks = (((vectors.Higher.X - vectors.Lower.X) * 2 + (vectors.Higher.Z - vectors.Lower.Z) * 2) - 4) * (vectors.Higher.Y - vectors.Lower.Y);
+                         int changedBlocks = (((vectors.Higher.X - vectors.Lower.X) * 2 + (vectors.Higher.Z - vectors.Lower.Z) * 2) - 4) * (vectors.Higher.Y - vectors.Lower.Y);
 
-                if (changedBlocks == 0) //maybe better math?
-                    changedBlocks = 1;
+                         if (changedBlocks == 0) //maybe better math?
+                             changedBlocks = 1;
 
-                user.Player.SendTemporaryMessage($"Around { changedBlocks } blocks changed.");
+                         user.Player.SendTemporaryMessage($"Around { changedBlocks } blocks changed.");
+                         */
             }
             catch (Exception e)
             {
@@ -271,9 +272,9 @@ namespace Eco.Mods.WorldEdit
                 {
                     Vector3i offset = dir.ToVec() * (vectors.Higher - vectors.Lower) * i;
 
-                    for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+                    for (int x = vectors.Lower.X; x != vectors.Higher.X; x = (x + 1) % Shared.Voxel.World.VoxelSize.X)
                         for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
-                            for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                            for (int z = vectors.Lower.Z; z != vectors.Higher.Z; z = (z + 1) % Shared.Voxel.World.VoxelSize.Z)
                             {
                                 var pos = new Vector3i(x, y, z);
 
@@ -292,8 +293,6 @@ namespace Eco.Mods.WorldEdit
                 Log.WriteError(e.ToStringPretty());
             }
         }
-
-
 
         [ChatCommand("/move", "", ChatAuthorizationLevel.Admin)]
         public static void Move(User user, string pDirectionAndAmount = "1")
@@ -346,7 +345,7 @@ namespace Eco.Mods.WorldEdit
                         }
                         */
 
-
+                /*
                 if (dir == Direction.Left || dir == Direction.Back || dir == Direction.Down)
                 {
                     for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
@@ -361,6 +360,7 @@ namespace Eco.Mods.WorldEdit
                             for (int z = vectors.Higher.Z - 1; z >= vectors.Lower.Z; z--)
                                 action.Invoke(x, y, z);
                 }
+                */
 
                 int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z)) * amount;
 
@@ -566,7 +566,7 @@ namespace Eco.Mods.WorldEdit
         }
 
         [ChatCommand("/distr", "", ChatAuthorizationLevel.Admin)]
-        public static void Distr(User user, string pFileName)
+        public static void Distr(User user)
         {
             try
             {
@@ -582,10 +582,11 @@ namespace Eco.Mods.WorldEdit
 
                 Dictionary<string, long> mBlocks = new Dictionary<string, long>();
 
-                for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+                for (int x = vectors.Lower.X; x != vectors.Higher.X; x = (x + 1) % Shared.Voxel.World.VoxelSize.X)
                     for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
-                        for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                        for (int z = vectors.Lower.Z; z != vectors.Higher.Z; z = (z + 1) % Shared.Voxel.World.VoxelSize.Z)
                         {
+                            //                 Console.WriteLine($"{x} {y} {z}");
                             var pos = new Vector3i(x, y, z);
                             var block = Eco.World.World.GetBlock(pos).GetType().ToString();
 
@@ -594,7 +595,7 @@ namespace Eco.Mods.WorldEdit
                             mBlocks[block] = count + 1;
                         }
 
-                double amountBlocks = (vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z);
+                double amountBlocks = mBlocks.Values.Sum(); // (vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z);
 
                 ChatManager.ServerMessageToPlayer($"total blocks: {amountBlocks}", user, false, Shared.Services.DefaultChatTags.Notifications, Shared.Services.ChatCategory.Info);
 

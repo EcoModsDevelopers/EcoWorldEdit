@@ -24,7 +24,7 @@ namespace Eco.Mods.WorldEdit
         public const string mSchematicPath = "./Schematics/";
         public Vector3i? FirstPos;
         public Vector3i? SecondPos;
-           
+
         //multiple undos with circular buffer?
         private Stack<WorldEditBlock> mLastCommandBlocks = null;
 
@@ -48,13 +48,72 @@ namespace Eco.Mods.WorldEdit
             Vector3i pos1 = FirstPos.Value;
             Vector3i pos2 = SecondPos.Value;
 
+            pos1.X = pos1.X % Shared.Voxel.World.VoxelSize.X;
+            pos1.Z = pos1.Z % Shared.Voxel.World.VoxelSize.Z;
+
+            pos2.X = pos2.X % Shared.Voxel.World.VoxelSize.X;
+            pos2.Z = pos2.Z % Shared.Voxel.World.VoxelSize.Z;
+
             lower.X = Math.Min(pos1.X, pos2.X);
             lower.Y = Math.Min(pos1.Y, pos2.Y);
             lower.Z = Math.Min(pos1.Z, pos2.Z);
 
-            higher.X = Math.Max(pos1.X, pos2.X) + 1;
+            higher.X = Math.Max(pos1.X, pos2.X);
             higher.Y = Math.Max(pos1.Y, pos2.Y) + 1;
-            higher.Z = Math.Max(pos1.Z, pos2.Z) + 1;
+            higher.Z = Math.Max(pos1.Z, pos2.Z);
+
+            KeyValuePair<int, int>[] volumes = new KeyValuePair<int, int>[4];
+
+            //sometimes a delta is 0 - we add one so the volume is not 0. The value does not matter here!
+            volumes[0] = new KeyValuePair<int, int>(0, (((higher.X - lower.X) + 1) * ((higher.Z - lower.Z) + 1)));
+            volumes[1] = new KeyValuePair<int, int>(1, (lower.X + (Shared.Voxel.World.VoxelSize.X - higher.X) + 1) * (lower.Z + (Shared.Voxel.World.VoxelSize.Z - higher.Z) + 1));
+            volumes[2] = new KeyValuePair<int, int>(2, ((higher.X - lower.X) + 1) * (lower.Z + (Shared.Voxel.World.VoxelSize.Z - higher.Z) + 1));
+            volumes[3] = new KeyValuePair<int, int>(3, (lower.X + (Shared.Voxel.World.VoxelSize.X - higher.X) + 1) * ((higher.Z - lower.Z) + 1));
+
+            //    (Math.Abs((lower.Z - Shared.Voxel.World.VoxelSize.Z) - (higher.Z - Shared.Voxel.World.VoxelSize.Z)) + 1);
+
+            KeyValuePair<int, int> min = volumes.MinObj(kv => kv.Value);
+
+
+            /*
+             * 
+            Console.WriteLine("----------------");
+            Console.WriteLine(volumes[0]);
+            Console.WriteLine(volumes[1]);
+            Console.WriteLine(volumes[2]);
+            Console.WriteLine(volumes[3]);
+            Console.WriteLine("Smallest: " + min.Key);
+
+            */
+
+            if (min.Key == 1)
+            {
+                //swap
+                Vector3i tmp = higher.Clone();
+                higher = lower;
+                lower = tmp;
+
+                lower.Y = Math.Min(pos1.Y, pos2.Y);
+                higher.Y = Math.Max(pos1.Y, pos2.Y) + 1;
+            }
+            if (min.Key == 3)
+            {
+                int tmp = higher.X;
+                higher.X = lower.X;
+                lower.X = tmp;
+            }
+            else if (min.Key == 2)
+            {
+                int tmp = higher.Z;
+                higher.Z = lower.Z;
+                lower.Z = tmp;
+            }
+
+            higher.X = (higher.X + 1) % Shared.Voxel.World.VoxelSize.X;
+            higher.Z = (higher.Z + 1) % Shared.Voxel.World.VoxelSize.Z;
+
+            Console.WriteLine(lower);
+            Console.WriteLine(higher);
 
             return new SortedVectorPair(lower, higher);
         }
@@ -66,7 +125,7 @@ namespace Eco.Mods.WorldEdit
 
             var firstResult = SumAllAxis(pDirection * FirstPos.Value);
             var secondResult = SumAllAxis(pDirection * SecondPos.Value);
-            
+
             bool useFirst = firstResult > secondResult;
             if (pContract)
                 useFirst = !useFirst;
@@ -132,9 +191,9 @@ namespace Eco.Mods.WorldEdit
 
             mClipboard.Clear();
 
-            for (int x = vectors.Lower.X; x < vectors.Higher.X; x++)
+            for (int x = vectors.Lower.X; x != vectors.Higher.X; x = (x + 1) % Shared.Voxel.World.VoxelSize.X)
                 for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
-                    for (int z = vectors.Lower.Z; z < vectors.Higher.Z; z++)
+                    for (int z = vectors.Lower.Z; z != vectors.Higher.Z; z = (z + 1) % Shared.Voxel.World.VoxelSize.Z)
                     {
                         var pos = new Vector3i(x, y, z);
 
