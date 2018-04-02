@@ -51,9 +51,8 @@ namespace Eco.Mods.WorldEdit
 
                 pos.X = pos.X % Shared.Voxel.World.VoxelSize.X;
                 pos.Z = pos.Z % Shared.Voxel.World.VoxelSize.Z;
-                
 
-               WorldEditUserData weud = WorldEditManager.GetUserData(context.Player.User.Name);
+                WorldEditUserData weud = WorldEditManager.GetUserData(context.Player.User.Name);
                 weud.FirstPos = pos;
 
                 context.Player.SendTemporaryMessage($"First Position set to ({pos.x}, {pos.y}, {pos.z})");
@@ -73,7 +72,7 @@ namespace Eco.Mods.WorldEdit
                     return InteractResult.Success;
 
                 var pos = context.BlockPosition.Value;
-                
+
                 pos.X = pos.X < 0 ? pos.X + Shared.Voxel.World.VoxelSize.X : pos.X;
                 pos.Z = pos.Z < 0 ? pos.Z + Shared.Voxel.World.VoxelSize.Z : pos.Z;
 

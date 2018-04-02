@@ -45,18 +45,6 @@ namespace Eco.Mods.WorldEdit
             Vector3i pos1 = FirstPos.Value;
             Vector3i pos2 = SecondPos.Value;
 
-
-            /*
-             * 
-            Console.WriteLine("----------------");
-            Console.WriteLine(volumes[0]);
-            Console.WriteLine(volumes[1]);
-            Console.WriteLine(volumes[2]);
-            Console.WriteLine(volumes[3]);
-            Console.WriteLine("Smallest: " + min.Key);
-
-            */
-
             int typeOfVolume = FindTypeOfVolume(ref pos1, ref pos2, out Vector3i lower, out Vector3i higher);
 
             if (typeOfVolume == 1)
@@ -84,9 +72,6 @@ namespace Eco.Mods.WorldEdit
 
             higher.X = (higher.X + 1) % Shared.Voxel.World.VoxelSize.X;
             higher.Z = (higher.Z + 1) % Shared.Voxel.World.VoxelSize.Z;
-
-            Console.WriteLine(lower);
-            Console.WriteLine(higher);
 
             return new SortedVectorPair(lower, higher);
         }
@@ -117,8 +102,6 @@ namespace Eco.Mods.WorldEdit
             volumes[1] = new KeyValuePair<int, int>(1, (lower.X + (Shared.Voxel.World.VoxelSize.X - higher.X) + 1) * (lower.Z + (Shared.Voxel.World.VoxelSize.Z - higher.Z) + 1));
             volumes[2] = new KeyValuePair<int, int>(2, ((higher.X - lower.X) + 1) * (lower.Z + (Shared.Voxel.World.VoxelSize.Z - higher.Z) + 1));
             volumes[3] = new KeyValuePair<int, int>(3, (lower.X + (Shared.Voxel.World.VoxelSize.X - higher.X) + 1) * ((higher.Z - lower.Z) + 1));
-
-            //    (Math.Abs((lower.Z - Shared.Voxel.World.VoxelSize.Z) - (higher.Z - Shared.Voxel.World.VoxelSize.Z)) + 1);
 
             KeyValuePair<int, int> min = volumes.MinObj(kv => kv.Value);
 

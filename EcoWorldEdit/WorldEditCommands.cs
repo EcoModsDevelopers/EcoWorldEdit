@@ -351,19 +351,25 @@ namespace Eco.Mods.WorldEdit
                     if (x < 0)
                         x = x + Shared.Voxel.World.VoxelSize.X;
 
-                    int z = vectors.Higher.Z - 1;
-                    if (z < 0)
-                        z = z + Shared.Voxel.World.VoxelSize.Z;
+                    int startZ = vectors.Higher.Z - 1;
+                    if (startZ < 0)
+                        startZ = startZ + Shared.Voxel.World.VoxelSize.Z;
+
+                    Console.WriteLine("--------------");
+                    Console.WriteLine(vectors.Lower);
+                    Console.WriteLine(vectors.Higher);
 
                     for (; x != (vectors.Lower.X - 1); x--)
                     {
                         if (x < 0)
                             x = x + Shared.Voxel.World.VoxelSize.X;
                         for (int y = vectors.Higher.Y - 1; y >= vectors.Lower.Y; y--)
-                            for (; z != (vectors.Lower.Z - 1); z--)
+                            for (int z = startZ; z != (vectors.Lower.Z - 1); z--)
                             {
                                 if (z < 0)
                                     z = z + Shared.Voxel.World.VoxelSize.Z;
+
+                                Console.WriteLine($"{x} {y} {z}");
                                 action.Invoke(x, y, z);
                             }
                     }
