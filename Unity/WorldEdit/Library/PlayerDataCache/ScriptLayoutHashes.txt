@@ -1,0 +1,10 @@
+WindowsStandalone
+PlayerPath?
+D:/GitHub/EcoWorldEdit/Unity/WorldEdit/AssetBundles/worldedit
+SceneListBegin?
+Assets/WorldEditScene.unity
+SceneListEnd?
+283f45565aed3e060608524670d9f81a UnityEngine.UI.dll:UnityEngine.UI.ContentSizeFitter
+5ea19b8a83c99d9905885fc1a7234050 UnityEngine.UI.dll:UnityEngine.UI.GridLayoutGroup
+b8f057a5d96b66234b3230a0d800dcf6 UnityEngine.UI.dll:UnityEngine.UI.Image
+4cbfc4095acb44803a729d366aa88ac7 UnityEngine.UI.dll:UnityEngine.UI.LayoutElement

@@ -104,6 +104,9 @@
       <Name>Eco.World</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /y /r "$(TargetPath)" "$(SolutionDir)Mods\"</PostBuildEvent>

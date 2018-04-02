@@ -42,11 +42,59 @@ namespace Eco.Mods.WorldEdit
             if (!FirstPos.HasValue || !SecondPos.HasValue)
                 return null;
 
-            Vector3i lower = new Vector3i();
-            Vector3i higher = new Vector3i();
-
             Vector3i pos1 = FirstPos.Value;
             Vector3i pos2 = SecondPos.Value;
+
+
+            /*
+             * 
+            Console.WriteLine("----------------");
+            Console.WriteLine(volumes[0]);
+            Console.WriteLine(volumes[1]);
+            Console.WriteLine(volumes[2]);
+            Console.WriteLine(volumes[3]);
+            Console.WriteLine("Smallest: " + min.Key);
+
+            */
+
+            int typeOfVolume = FindTypeOfVolume(ref pos1, ref pos2, out Vector3i lower, out Vector3i higher);
+
+            if (typeOfVolume == 1)
+            {
+                //swap
+                Vector3i tmp = higher.Clone();
+                higher = lower;
+                lower = tmp;
+
+                lower.Y = Math.Min(pos1.Y, pos2.Y);
+                higher.Y = Math.Max(pos1.Y, pos2.Y) + 1;
+            }
+            if (typeOfVolume == 3)
+            {
+                int tmp = higher.X;
+                higher.X = lower.X;
+                lower.X = tmp;
+            }
+            else if (typeOfVolume == 2)
+            {
+                int tmp = higher.Z;
+                higher.Z = lower.Z;
+                lower.Z = tmp;
+            }
+
+            higher.X = (higher.X + 1) % Shared.Voxel.World.VoxelSize.X;
+            higher.Z = (higher.Z + 1) % Shared.Voxel.World.VoxelSize.Z;
+
+            Console.WriteLine(lower);
+            Console.WriteLine(higher);
+
+            return new SortedVectorPair(lower, higher);
+        }
+
+        public int FindTypeOfVolume(ref Vector3i pos1, ref Vector3i pos2, out Vector3i lower, out Vector3i higher)
+        {
+            lower = new Vector3i();
+            higher = new Vector3i();
 
             pos1.X = pos1.X % Shared.Voxel.World.VoxelSize.X;
             pos1.Z = pos1.Z % Shared.Voxel.World.VoxelSize.Z;
@@ -74,59 +122,29 @@ namespace Eco.Mods.WorldEdit
 
             KeyValuePair<int, int> min = volumes.MinObj(kv => kv.Value);
 
-
-            /*
-             * 
-            Console.WriteLine("----------------");
-            Console.WriteLine(volumes[0]);
-            Console.WriteLine(volumes[1]);
-            Console.WriteLine(volumes[2]);
-            Console.WriteLine(volumes[3]);
-            Console.WriteLine("Smallest: " + min.Key);
-
-            */
-
-            if (min.Key == 1)
-            {
-                //swap
-                Vector3i tmp = higher.Clone();
-                higher = lower;
-                lower = tmp;
-
-                lower.Y = Math.Min(pos1.Y, pos2.Y);
-                higher.Y = Math.Max(pos1.Y, pos2.Y) + 1;
-            }
-            if (min.Key == 3)
-            {
-                int tmp = higher.X;
-                higher.X = lower.X;
-                lower.X = tmp;
-            }
-            else if (min.Key == 2)
-            {
-                int tmp = higher.Z;
-                higher.Z = lower.Z;
-                lower.Z = tmp;
-            }
-
-            higher.X = (higher.X + 1) % Shared.Voxel.World.VoxelSize.X;
-            higher.Z = (higher.Z + 1) % Shared.Voxel.World.VoxelSize.Z;
-
-            Console.WriteLine(lower);
-            Console.WriteLine(higher);
-
-            return new SortedVectorPair(lower, higher);
+            return min.Key;
         }
 
         public bool ExpandSelection(Vector3i pDirection, bool pContract = false)
         {
-            if (!FirstPos.HasValue || !SecondPos.HasValue)
+            SortedVectorPair svp = GetSortedVectors();
+            if (svp == null)
                 return false;
+
+            Vector3i pos1 = FirstPos.Value;
+            Vector3i pos2 = SecondPos.Value;
+
+
+            int typeOfVolume = FindTypeOfVolume(ref pos1, ref pos2, out Vector3i lower, out Vector3i higher);
 
             var firstResult = SumAllAxis(pDirection * FirstPos.Value);
             var secondResult = SumAllAxis(pDirection * SecondPos.Value);
 
             bool useFirst = firstResult > secondResult;
+
+            if (typeOfVolume == 1)
+                useFirst = !useFirst;
+
             if (pContract)
                 useFirst = !useFirst;
 
