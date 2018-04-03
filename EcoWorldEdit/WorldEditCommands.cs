@@ -71,6 +71,8 @@ namespace Eco.Mods.WorldEdit
 
                 weud.StartEditingBlocks();
 
+                long changedBlocks = 0;
+
                 for (int x = vectors.Lower.X; x != vectors.Higher.X; x = (x + 1) % Shared.Voxel.World.VoxelSize.X)
                     for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
                         for (int z = vectors.Lower.Z; z != vectors.Higher.Z; z = (z + 1) % Shared.Voxel.World.VoxelSize.Z)
@@ -78,9 +80,8 @@ namespace Eco.Mods.WorldEdit
                             var pos = new Vector3i(x, y, z);
                             weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
                             WorldEditManager.SetBlock(blockType, pos);
+                            changedBlocks++;
                         }
-
-                int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z));
 
                 user.Player.SendTemporaryMessage($"{changedBlocks} blocks changed.");
             }
@@ -202,12 +203,15 @@ namespace Eco.Mods.WorldEdit
                 var vectors = weud.GetSortedVectors();
 
                 weud.StartEditingBlocks();
+                long changedBlocks = 0;
+
                 for (int x = vectors.Lower.X; x != vectors.Higher.X; x = (x + 1) % Shared.Voxel.World.VoxelSize.X)
                     for (int y = vectors.Lower.Y; y < vectors.Higher.Y; y++)
                     {
                         var pos = new Vector3i(x, y, vectors.Lower.Z);
                         weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
                         WorldEditManager.SetBlock(blockType, pos);
+                        changedBlocks++;
                     }
 
                 for (int x = vectors.Lower.X; x != vectors.Higher.X; x = (x + 1) % Shared.Voxel.World.VoxelSize.X)
@@ -216,6 +220,7 @@ namespace Eco.Mods.WorldEdit
                         var pos = new Vector3i(x, y, vectors.Higher.Z - 1);
                         weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
                         WorldEditManager.SetBlock(blockType, pos);
+                        changedBlocks++;
                     }
 
                 for (int z = vectors.Lower.Z; z != vectors.Higher.Z; z = (z + 1) % Shared.Voxel.World.VoxelSize.Z)
@@ -224,6 +229,7 @@ namespace Eco.Mods.WorldEdit
                         var pos = new Vector3i(vectors.Lower.X, y, z);
                         weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
                         WorldEditManager.SetBlock(blockType, pos);
+                        changedBlocks++;
                     }
 
                 for (int z = vectors.Lower.Z; z != vectors.Higher.Z; z = (z + 1) % Shared.Voxel.World.VoxelSize.Z)
@@ -232,9 +238,10 @@ namespace Eco.Mods.WorldEdit
                         var pos = new Vector3i(vectors.Higher.X - 1, y, z);
                         weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos), pos);
                         WorldEditManager.SetBlock(blockType, pos);
+                        changedBlocks++;
                     }
 
-                int changedBlocks = (((vectors.Higher.X - vectors.Lower.X) * 2 + (vectors.Higher.Z - vectors.Lower.Z) * 2) - 4) * (vectors.Higher.Y - vectors.Lower.Y);
+                //    int changedBlocks = (((vectors.Higher.X - vectors.Lower.X) * 2 + (vectors.Higher.Z - vectors.Lower.Z) * 2) - 4) * (vectors.Higher.Y - vectors.Lower.Y);
 
                 if (changedBlocks == 0) //maybe better math?
                     changedBlocks = 1;
@@ -268,6 +275,8 @@ namespace Eco.Mods.WorldEdit
                 weud.StartEditingBlocks();
                 UserSession session = weud.GetNewSession();
 
+                long changedBlocks = 0;
+
                 for (int i = 1; i <= amount; i++)
                 {
                     Vector3i offset = dir.ToVec() * (vectors.Higher - vectors.Lower) * i;
@@ -281,10 +290,11 @@ namespace Eco.Mods.WorldEdit
                                 weud.AddBlockChangedEntry(Eco.World.World.GetBlock(pos + offset), pos + offset);
                                 var sourceBlock = Eco.World.World.GetBlock(pos);
                                 WorldEditManager.SetBlock(sourceBlock.GetType(), pos + offset, session, pos, sourceBlock);
+                                changedBlocks++;
                             }
                 }
 
-                int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z)) * amount;
+                //   int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z)) * amount;
 
                 user.Player.SendTemporaryMessage($"{changedBlocks} blocks changed.");
             }
@@ -320,6 +330,7 @@ namespace Eco.Mods.WorldEdit
                 //     if (dir == Direction.Up)
                 //          offset *= vectors.Higher.Y - vectors.Lower.Y;
 
+                long changedBlocks = 0;
 
                 Action<int, int, int> action = (int x, int y, int z) =>
                   {
@@ -331,6 +342,7 @@ namespace Eco.Mods.WorldEdit
                       var sourceBlock = Eco.World.World.GetBlock(pos);
                       WorldEditManager.SetBlock(sourceBlock.GetType(), pos + offset, session, pos, sourceBlock);
                       WorldEditManager.SetBlock(typeof(EmptyBlock), pos, session);
+                      changedBlocks++;
                   };
 
 
@@ -355,9 +367,9 @@ namespace Eco.Mods.WorldEdit
                     if (startZ < 0)
                         startZ = startZ + Shared.Voxel.World.VoxelSize.Z;
 
-                    Console.WriteLine("--------------");
-                    Console.WriteLine(vectors.Lower);
-                    Console.WriteLine(vectors.Higher);
+                    //           Console.WriteLine("--------------");
+                    //           Console.WriteLine(vectors.Lower);
+                    //            Console.WriteLine(vectors.Higher);
 
                     for (; x != (vectors.Lower.X - 1); x--)
                     {
@@ -369,14 +381,13 @@ namespace Eco.Mods.WorldEdit
                                 if (z < 0)
                                     z = z + Shared.Voxel.World.VoxelSize.Z;
 
-                                Console.WriteLine($"{x} {y} {z}");
+                                //               Console.WriteLine($"{x} {y} {z}");
                                 action.Invoke(x, y, z);
                             }
                     }
                 }
 
-
-                int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z)) * amount;
+                // int changedBlocks = (int)((vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z)) * amount;
 
                 user.Player.SendTemporaryMessage($"{changedBlocks} blocks moved.");
             }
