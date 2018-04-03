@@ -117,7 +117,6 @@ namespace Eco.Mods.WorldEdit
             Vector3i pos1 = FirstPos.Value;
             Vector3i pos2 = SecondPos.Value;
 
-
             int typeOfVolume = FindTypeOfVolume(ref pos1, ref pos2, out Vector3i lower, out Vector3i higher);
 
             var firstResult = SumAllAxis(pDirection * FirstPos.Value);
