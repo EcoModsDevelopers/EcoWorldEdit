@@ -184,8 +184,12 @@ namespace Eco.Mods.WorldEdit
                 if (wObject == null)
                     return;
 
-                WorldObject newObject = (WorldObject)Activator.CreateInstance(wObject.GetType());
-                newObject = WorldObjectManager.Add(newObject, wObject.Creator.User, pPosition, wObject.Rotation);
+
+                WorldObject newObject = WorldObjectUtil.Spawn(wObject.GetType().Name, wObject.Creator.User, pPosition);
+                newObject.Rotation = wObject.Rotation;
+
+                //   WorldObject newObject = (WorldObject)Activator.CreateInstance(wObject.GetType());
+                // newObject = WorldObjectManager.Add(newObject, wObject.Creator.User, pPosition, wObject.Rotation);
 
 
                 {
