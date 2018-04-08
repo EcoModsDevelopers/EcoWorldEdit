@@ -68,12 +68,8 @@
       <Name>Eco.ModKit</Name>
     </ProjectReference>
     <ProjectReference Include="E:\Eco\Server\Eco.Mods\Eco.Mods.csproj">
-      <Project>{7a3fb11d-3a73-4b0c-b991-7326b54ff606}</Project>
+      <Project>{7A3FB11D-3A73-4B0C-B991-7326B54FF606}</Project>
       <Name>Eco.Mods</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Eco\Server\Eco.Plugins\Eco.Plugins.csproj">
-      <Project>{5e8e63d5-9898-4830-9918-8dad0b995bb3}</Project>
-      <Name>Eco.Plugins</Name>
     </ProjectReference>
     <ProjectReference Include="E:\Eco\Server\Eco.Shared\Eco.Shared.csproj">
       <Project>{510558a8-a88e-473f-b07d-918e696c81e1}</Project>

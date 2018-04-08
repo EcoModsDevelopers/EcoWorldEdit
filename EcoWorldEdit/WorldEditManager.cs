@@ -5,7 +5,6 @@ using Eco.Gameplay.Items;
 using Eco.Gameplay.Objects;
 using Eco.Gameplay.Plants;
 using Eco.Gameplay.Players;
-using Eco.Mods.TechTree;
 using Eco.Shared.Math;
 using Eco.Shared.Utils;
 using Eco.Simulation;
@@ -185,11 +184,12 @@ namespace Eco.Mods.WorldEdit
                     return;
 
 
-                WorldObject newObject = WorldObjectUtil.Spawn(wObject.GetType().Name, wObject.Creator.User, pPosition);
-                newObject.Rotation = wObject.Rotation;
+                //    WorldObject newObject = WorldObjectUtil.Spawn(wObject.GetType().Name, wObject.Creator.User, pPosition);
+                //    newObject.Rotation = wObject.Rotation;
 
-                //   WorldObject newObject = (WorldObject)Activator.CreateInstance(wObject.GetType());
-                // newObject = WorldObjectManager.Add(newObject, wObject.Creator.User, pPosition, wObject.Rotation);
+
+                WorldObject newObject = (WorldObject)Activator.CreateInstance(wObject.GetType(), true);
+                newObject = WorldObjectManager.Add(newObject, wObject.Creator.User, pPosition, wObject.Rotation);
 
 
                 {
