@@ -32,6 +32,33 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Eco.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EcoServer.0.7.3.2\lib\Eco.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Gameplay, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EcoServer.0.7.3.2\lib\Eco.Gameplay.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.ModKit, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EcoServer.0.7.3.2\lib\Eco.ModKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Mods, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EcoServer.0.7.3.2\lib\Eco.Mods.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Shared, Version=0.7.3.2, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EcoServer.0.7.3.2\lib\Eco.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Simulation, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EcoServer.0.7.3.2\lib\Eco.Simulation.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Stats, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EcoServer.0.7.3.2\lib\Eco.Stats.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.World, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EcoServer.0.7.3.2\lib\Eco.World.dll</HintPath>
+    </Reference>
+    <Reference Include="LiteDB, Version=4.1.2.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+      <HintPath>..\packages\EcoServer.0.7.3.2\lib\LiteDB.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
@@ -55,53 +82,8 @@
     <Compile Include="WorldEditUserData.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="E:\Eco\Server\Eco.Core\Eco.Core.csproj">
-      <Project>{be1761ab-69f5-481c-a4bf-9a7251c02596}</Project>
-      <Name>Eco.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Eco\Server\Eco.Gameplay\Eco.Gameplay.csproj">
-      <Project>{5c980505-2974-4b4b-b56a-2be2422e98aa}</Project>
-      <Name>Eco.Gameplay</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Eco\Server\Eco.ModKit\Eco.ModKit.csproj">
-      <Project>{c09e1100-6122-4e22-ba57-4f335c82d3b7}</Project>
-      <Name>Eco.ModKit</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Eco\Server\Eco.Mods\Eco.Mods.csproj">
-      <Project>{7A3FB11D-3A73-4B0C-B991-7326B54FF606}</Project>
-      <Name>Eco.Mods</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Eco\Server\Eco.Shared\Eco.Shared.csproj">
-      <Project>{510558a8-a88e-473f-b07d-918e696c81e1}</Project>
-      <Name>Eco.Shared</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Eco\Server\Eco.Simulation\Eco.Simulation.csproj">
-      <Project>{7d66ec71-4045-460e-8f16-7f5b64e79939}</Project>
-      <Name>Eco.Simulation</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Eco\Server\Eco.Stats\Eco.Stats.csproj">
-      <Project>{c945e354-36f5-41cb-b7a1-435ca48ec0d2}</Project>
-      <Name>Eco.Stats</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Eco\Server\Eco.Tests\Eco.Tests.csproj">
-      <Project>{7f353c23-c53a-41cc-9e3e-4162ac5441cf}</Project>
-      <Name>Eco.Tests</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Eco\Server\Eco.Webserver\Eco.WebServer.csproj">
-      <Project>{eca98155-9d8d-47e1-a1b8-b29cdb192979}</Project>
-      <Name>Eco.WebServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Eco\Server\Eco.WorldGenerator\Eco.WorldGenerator.csproj">
-      <Project>{6799b69a-9bb0-4e26-b6c9-6b7c9eec3a03}</Project>
-      <Name>Eco.WorldGenerator</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Eco\Server\Eco.World\Eco.World.csproj">
-      <Project>{08bd87d1-b811-4665-b5cd-52e331932fb8}</Project>
-      <Name>Eco.World</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
