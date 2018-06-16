@@ -1,4 +1,5 @@
-﻿using Eco.Core.Plugins;
+﻿using Asphalt.Util;
+using Eco.Core.Plugins;
 using Eco.Core.Serialization;
 using Eco.Gameplay.Components;
 using Eco.Gameplay.Items;
@@ -49,24 +50,6 @@ namespace Eco.Mods.WorldEdit
             WorldEditUserData weud = new WorldEditUserData();
             mUserData.Add(pUsername, weud);
             return weud;
-        }
-
-        public static Type FindBlockTypeFromBlockName(string pBlockName)
-        {
-            pBlockName = pBlockName.ToLower();
-
-            if (pBlockName == "air")
-                return typeof(EmptyBlock);
-
-            Type blockType = BlockManager.BlockTypes.FirstOrDefault(t => t.Name.ToLower() == pBlockName + "floorblock");
-
-            if (blockType == null)
-                blockType = BlockManager.BlockTypes.FirstOrDefault(t => t.Name.ToLower() == pBlockName);
-
-            if (blockType == null)
-                blockType = BlockManager.BlockTypes.FirstOrDefault(t => t.Name.ToLower() == pBlockName + "block");
-
-            return blockType;
         }
 
         public static void SetBlock(WorldEditBlock pBlock, UserSession pSession)
@@ -127,7 +110,7 @@ namespace Eco.Mods.WorldEdit
                     }
                     else
                     {
-                        ps = GetPlantSpecies(pType);
+                        ps = WorldUtils.GetPlantSpecies(pType);
 
                         if (pSourceBlock != null)
                             pb = ((PlantBlock)pSourceBlock).Plant;
@@ -221,43 +204,6 @@ namespace Eco.Mods.WorldEdit
             Log.WriteLine("Unknown Type: " + pType);
         }
 
-        private static PlantSpecies GetPlantSpecies(Type pBlockType)
-        {
-            return EcoDef.Obj.Species.OfType<PlantSpecies>().First(ps => ps.BlockType.Type == pBlockType);
-        }
-
-        public static Direction getLookingDirection(User pUser)
-        {
-            float yDirection = pUser.Rotation.Forward.Y;
-
-            if (yDirection > 0.85)
-                return Direction.Up;
-            else if (yDirection < -0.85)
-                return Direction.Down;
-
-            return pUser.FacingDir;
-        }
-
-        public static Direction GetDirection(User pUser, string pDirection)
-        {
-            if (string.IsNullOrWhiteSpace(pDirection))
-                return getLookingDirection(pUser);
-
-            switch (pDirection)
-            {
-                case "up":
-                case "u":
-                    return Direction.Up;
-
-                case "down":
-                case "d":
-                    return Direction.Down;
-
-                default:
-                    pUser.Player.SendTemporaryError($"Unknown direction!");
-                    return Direction.Unknown;
-            }
-        }
 
         public static Direction GetDirectionAndAmount(User pUser, string pDirectionAndAmount, out int pAmount)
         {
@@ -270,7 +216,7 @@ namespace Eco.Mods.WorldEdit
                 return Direction.Unknown;
             }
 
-            return GetDirection(pUser, splitted.Length >= 2 ? splitted[1] : null);
+            return DirectionUtils.GetDirectionOrLooking(pUser, splitted.Length >= 2 ? splitted[1] : null);
         }
     }
 }

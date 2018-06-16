@@ -70,7 +70,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AffineTransform.cs" />
     <Compile Include="EcoWorldEdit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SortedVectorPair.cs" />
@@ -84,6 +83,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Asphalt-ModKit\Asphalt-ModKit\Asphalt-ModKit.csproj">
+      <Project>{BBEA3DFA-52E0-448D-832F-C7BF96E3F3E8}</Project>
+      <Name>Asphalt-ModKit</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

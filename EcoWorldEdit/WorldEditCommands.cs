@@ -1,4 +1,5 @@
-﻿using Eco.Core.Plugins;
+﻿using Asphalt.Util;
+using Eco.Core.Plugins;
 using Eco.Gameplay;
 using Eco.Gameplay.Items;
 using Eco.Gameplay.Plants;
@@ -59,7 +60,7 @@ namespace Eco.Mods.WorldEdit
                     return;
                 }
 
-                Type blockType = WorldEditManager.FindBlockTypeFromBlockName(pTypeName);
+                Type blockType = BlockUtils.GetBlockType(pTypeName);
 
                 if (blockType == null)
                 {
@@ -112,7 +113,7 @@ namespace Eco.Mods.WorldEdit
                     return;
                 }
 
-                Type blockTypeToFind = WorldEditManager.FindBlockTypeFromBlockName(toFind);
+                Type blockTypeToFind = BlockUtils.GetBlockType(toFind);
                 if (blockTypeToFind == null)
                 {
                     user.Player.SendTemporaryMessage($"No BlockType with name {toFind} found!");
@@ -123,7 +124,7 @@ namespace Eco.Mods.WorldEdit
 
                 if (toReplace != string.Empty)
                 {
-                    blockTypeToReplace = WorldEditManager.FindBlockTypeFromBlockName(toReplace);
+                    blockTypeToReplace = BlockUtils.GetBlockType(toReplace);
                     if (blockTypeToReplace == null)
                     {
                         user.Player.SendTemporaryMessage($"No BlockType with name { toReplace } found!");
@@ -192,7 +193,7 @@ namespace Eco.Mods.WorldEdit
                     return;
                 }
 
-                Type blockType = WorldEditManager.FindBlockTypeFromBlockName(pTypeName);
+                Type blockType = BlockUtils.GetBlockType(pTypeName);
 
                 if (blockType == null)
                 {
