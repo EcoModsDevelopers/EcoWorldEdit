@@ -51,7 +51,7 @@ namespace Eco.Mods.WorldEdit
             if (typeOfVolume == 1)
             {
                 //swap
-                Vector3i tmp = higher.Clone();
+                Vector3i tmp = higher;
                 higher = lower;
                 lower = tmp;
 
