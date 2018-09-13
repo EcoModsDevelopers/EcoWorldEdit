@@ -247,7 +247,7 @@ namespace Eco.Mods.WorldEdit
 
         public bool SaveClipboard(string pFileName)
         {
-            if (mClipboard == null)
+            if (mClipboard == null || mClipboard.Count <= 0)
                 return false;
 
             var stream = EcoSerializer.Serialize(mClipboard.ToArray());

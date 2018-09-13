@@ -197,7 +197,7 @@ namespace Eco.Mods.WorldEdit
 
                 if (blockType == null)
                 {
-                    user.Player.SendTemporaryMessage($"No BlockType with name { pTypeName } found!");
+                    user.Player.SendTemporaryMessage($"No BlockType with name {pTypeName} found!");
                     return;
                 }
 
@@ -410,7 +410,7 @@ namespace Eco.Mods.WorldEdit
                 WorldEditUserData weud = WorldEditManager.GetUserData(user.Name);
 
                 if (weud.ExpandSelection(direction.ToVec() * amount))
-                    user.Player.SendTemporaryMessage($"Expanded selection {amount} direction");
+                    user.Player.SendTemporaryMessage($"Expanded selection {amount} {direction}");
                 else
                     user.Player.SendTemporaryMessage($"Please set both points with the Wand Tool first!");
             }
@@ -565,7 +565,7 @@ namespace Eco.Mods.WorldEdit
                 if (weud.SaveClipboard(pFileName))
                     user.Player.SendTemporaryMessage($"Export done.");
                 else
-                    user.Player.SendTemporaryMessage($"Please copy a selection first!");
+                    user.Player.SendTemporaryMessage($"Please //copy a selection first!");
             }
             catch (Exception e)
             {

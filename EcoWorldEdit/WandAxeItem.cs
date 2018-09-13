@@ -26,8 +26,7 @@ namespace Eco.Mods.WorldEdit
     public partial class WandAxeItem : ToolItem
     {
         private static IDynamicValue skilledRepairCost = new ConstantValue(1);
-
-
+        
         public override string FriendlyName { get { return "Wand Tool"; } }
         public override string Description { get { return "Does magical World Edit things"; } }
 
@@ -96,12 +95,12 @@ namespace Eco.Mods.WorldEdit
             return true;
         }
 
-        protected new Result PlayerPlaceBlock<T>(Vector3i blockPosition, Player player, bool replaceBlock, float calorieMultiplier = 1)
+        protected new Result PlayerPlaceBlock(Type blockType, Vector3i blockPosition, Player player, bool replaceBlock, float calorieMultiplier = 1, params IAtomicAction[] additionalActions)
         {
             return Result.Succeeded;
         }
 
-        protected new Result PlayerPlaceBlock(Type blockType, Vector3i blockPosition, Player player, bool replaceBlock, float calorieMultiplier = 1)
+        protected new Result PlayerPlaceBlock<T>(Vector3i blockPosition, Player player, bool replaceBlock, float calorieMultiplier = 1, params IAtomicAction[] additionalActions)
         {
             return Result.Succeeded;
         }
