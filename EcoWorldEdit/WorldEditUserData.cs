@@ -250,7 +250,7 @@ namespace Eco.Mods.WorldEdit
             if (mClipboard == null || mClipboard.Count <= 0)
                 return false;
 
-            var stream = EcoSerializer.Serialize(mClipboard.ToArray());
+            var stream = EcoSerializer.Serialize<List<WorldEditBlock>>(mClipboard.ToList());
 
             Directory.CreateDirectory(mSchematicPath);
             pFileName = new string(pFileName.Where(x => !Path.GetInvalidFileNameChars().Contains(x)).ToArray());
@@ -269,7 +269,7 @@ namespace Eco.Mods.WorldEdit
             if (!File.Exists(pFileName))
                 return false;
 
-            mClipboard = EcoSerializer.Deserialize<List<WorldEditBlock>>(File.OpenRead(pFileName));
+            mClipboard = EcoSerializer.Deserialize<List<WorldEditBlock>>(File.OpenRead(pFileName)).ToList();
 
             return true;
         }
