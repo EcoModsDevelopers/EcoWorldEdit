@@ -20,17 +20,18 @@ namespace Eco.Mods.WorldEdit
     using Eco.Shared.Math;
     using Eco.Gameplay.Players;
     using Eco.Core.Utils.AtomicAction;
+    using Eco.Shared.Localization;
 
     [Serialized]
     [Category("Hidden")]
     public partial class WandAxeItem : ToolItem
     {
         private static IDynamicValue skilledRepairCost = new ConstantValue(1);
-        
-        public override string FriendlyName { get { return "Wand Tool"; } }
-        public override string Description { get { return "Does magical World Edit things"; } }
 
-        public override string LeftActionDescription { get { return string.Empty; } }
+        public override LocString DisplayName { get { return Localizer.DoStr("Wand Tool"); } }
+        public override LocString DisplayDescription { get { return Localizer.DoStr("Does magical World Edit things"); } }
+
+        public override LocString LeftActionDescription { get { return Localizer.DoStr(""); } }
 
         public override ClientPredictedBlockAction LeftAction { get { return ClientPredictedBlockAction.None; } }
 
