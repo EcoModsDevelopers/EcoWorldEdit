@@ -30,7 +30,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -43,7 +43,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -88,7 +88,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -176,7 +176,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -252,7 +252,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -301,7 +301,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -394,7 +394,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -416,7 +416,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -438,7 +438,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -460,7 +460,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -477,7 +477,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -496,7 +496,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -515,7 +515,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -533,7 +533,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -551,7 +551,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -569,7 +569,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -587,7 +587,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -623,18 +623,18 @@ namespace Eco.Mods.WorldEdit
 
                 double amountBlocks = mBlocks.Values.Sum(); // (vectors.Higher.X - vectors.Lower.X) * (vectors.Higher.Y - vectors.Lower.Y) * (vectors.Higher.Z - vectors.Lower.Z);
 
-                ChatManager.ServerMessageToPlayer($"total blocks: {amountBlocks}", user, false, Shared.Services.DefaultChatTags.Notifications, Shared.Services.ChatCategory.Info);
+                user.SendMessage($"total blocks: {amountBlocks}", false);
 
                 foreach (var entry in mBlocks)
                 {
                     string percent = (Math.Round((entry.Value / amountBlocks) * 100, 2)).ToString() + "%";
                     string nameOfBlock = entry.Key.Substring(entry.Key.LastIndexOf(".") + 1);
-                    ChatManager.ServerMessageToPlayer($"{entry.Value.ToString().PadRight(6)} {percent.PadRight(6)} {nameOfBlock}", user, false, Shared.Services.DefaultChatTags.Notifications, Shared.Services.ChatCategory.Info);
+                    user.SendMessage($"{entry.Value.ToString().PadRight(6)} {percent.PadRight(6)} {nameOfBlock}", false);
                 }
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
         }
 
@@ -674,7 +674,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+               AsphaltLog.WriteError(e.ToStringPretty());
             }
         }*/
 

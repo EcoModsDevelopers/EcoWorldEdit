@@ -17,8 +17,6 @@ public partial class WorldObjectEditor : Editor
 
     private WorldObject worldObject;
 
-    public Action InternalInspectorGUIAction;
-
     void OnEnable()
     {
         worldObject = (WorldObject)target;
@@ -116,10 +114,12 @@ public partial class WorldObjectEditor : Editor
                 worldObject.size = EditorGUILayout.Vector3Field("Override Size", worldObject.size);
         }
 
-        if (this.InternalInspectorGUIAction == null)
-            Shader.EnableKeyword("NO_CURVE"); // mod kit doesn't have curve helper
-        else
-            InternalInspectorGUIAction();
+#if ECO_DEV
+        ShowInternalDebugTools();
+#else
+        Shader.EnableKeyword("NO_CURVE"); // mod kit doesn't have curve helper
+#endif
+
 
         serializedObject.ApplyModifiedProperties();
     }
@@ -186,4 +186,29 @@ public partial class WorldObjectEditor : Editor
         if (property != null)
             EditorGUILayout.PropertyField(property, new GUIContent(label));
     }
+
+#if ECO_DEV
+    private void ShowInternalDebugTools()
+    {
+        if (worldObject.hasOccupancy)
+        {
+            if (GUILayout.Button("Update Occupancy"))
+                BuildWorldObjectOccupancy.UpdateOccupancy((WorldObject)target);
+        }
+
+        if (EditorApplication.isPlaying)
+        {
+            var oldColor = GUI.backgroundColor;
+            GUI.backgroundColor = Color.yellow;
+            if (GUILayout.Button("Debug Server Next Tick"))
+                worldObject.view.RPC("DebugNextTick");
+            if (GUILayout.Button("Rebind Animation Events"))
+                worldObject.BindEvents();
+            GUI.backgroundColor = oldColor;
+        }
+
+        if (GUILayout.Button("UnCurve"))
+            Shader.EnableKeyword("NO_CURVE");
+    }
+#endif
 }

@@ -105,6 +105,14 @@ public class ModExporter : EditorWindow
             return;
         }
 
+        // deactivate roots for bundle
+        Dictionary<string, bool> activeState = new Dictionary<string, bool>();
+        foreach (var root in scene.GetRootGameObjects())
+        {
+            activeState[root.name] = root.activeSelf;
+            root.SetActive(false);
+        }
+
         var path = EditorPrefs.GetString("ModKitPath", string.Empty);
         var fileName = string.Empty;
         var dirName = string.Empty;
@@ -128,5 +136,10 @@ public class ModExporter : EditorWindow
             if (f == bundleName)
                 File.Copy(Path.Combine("AssetBundles", f), path, true);
         }
+
+        // restore active state
+        foreach (var root in scene.GetRootGameObjects())
+            if (activeState.ContainsKey(root.name))
+                root.SetActive(activeState[root.name]);
     }
 }

@@ -91,7 +91,6 @@ public class PrefabUsageCaseEditorComponent : MonoBehaviour
         color.a = 1.0f;
         Gizmos.color = color;
         Gizmos.DrawWireCube(this.transform.position, UnityEngine.Vector3.one);
-
     }
 }
 

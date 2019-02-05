@@ -10,6 +10,8 @@ TagManager:
   - ModObject
   - ModBlock
   - Block
+  - WorldObject
+  - Item
   layers:
   - Default
   - TransparentFX
@@ -33,10 +35,10 @@ TagManager:
   - SmallAnimals
   - Foliage
   - OnlyGI
+  - IgnoreInteraction
   - 
-  - 
-  - 
-  - 
+  - MovingPlatform
+  - MovingPlatformSimulation
   - 
   - 
   - 

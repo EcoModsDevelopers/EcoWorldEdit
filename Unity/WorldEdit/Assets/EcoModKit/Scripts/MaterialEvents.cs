@@ -1,21 +1,19 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(HighlightableObject))]
 [RequireComponent(typeof(Renderer))]
 public class MaterialEvents : MonoBehaviour
 {
-
     [Tooltip("Shader name (eg '_Cutoff') of property to modify. Specify names for the types you modify. (Color if you use SetColor, etc)")]
     public string ShaderColorName, ShaderFloatName, ShaderIntName, ShaderVectorName;
 
     [Tooltip("Colors for use with SetColor action.")]
-    [ColorUsage(true,true,0f,8f,0.125f,3f)]
+    [ColorUsage(true, true)]
     public Color[] indexedColors;
 
     [Tooltip("Vectors for use with SetVector action.")]
     public Vector4[] indexedVectors;
 
-    [ColorUsage(true, true, 0f, 8f, 0.125f, 3f)]
+    [ColorUsage(true, true)]
     public Color tweenFrom, tweenTo;
     public float tweenLength = 2f;
     public iTween.EaseType easeType = iTween.EaseType.easeInOutCubic;

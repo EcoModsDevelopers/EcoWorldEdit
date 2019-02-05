@@ -61,9 +61,15 @@ public class BlockSetEditor : Editor
     void OnEnable() 
     {
 		blockSet = (BlockSet)target;		
-	}	
-	
-	public override void OnInspectorGUI() 
+	}
+
+    private void OnDisable()
+    {
+        foreach (var block in blockSet.Blocks)
+            GameObject.DestroyImmediate(block.Editor);
+    }
+
+    public override void OnInspectorGUI() 
     {		
 		DrawBlockSet( blockSet );
 		EditorGUILayout.Separator();

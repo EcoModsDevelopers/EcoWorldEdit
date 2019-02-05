@@ -17,80 +17,79 @@ float3 slerp(float3 p0, float3 p1, float t)
 	return p0 * ratioA + p1 * ratioB;
 }
 
-// This is where the curvature is applied
-float4 curveVertex(float4 vertex, float4x4 Object2World, float4x4 World2Object)
+float4 curve(float4 vertex, float radius, float3 center)
 {
 #ifdef NO_CURVE
 	return vertex;
 #else
-	float4 vv = mul(Object2World, vertex);
-
-	float3 toVertex = vv.xyz - _WorldCenter.xyz;
-
-	float3 v1 = float3(0, toVertex.y, 0);			// first basis vector, height of the vertex
-	float3 xz = float3(toVertex.x, 0, toVertex.z);
-	float3 v2 = normalize(xz) * abs(toVertex.y);	// second basis vector, the xz- position, of the same height
-
+	float3 toVertex = vertex.xyz - center;
 	float d = length(toVertex.xz);
-	float c = 2 * 3.14159 * abs(_WorldRadius); // circumference of the world
 
-	// if we slerp from v1->v2, we get the curvature we want
-	float t = clamp(d / (c / 4), 0, 2);
-	float3 s = slerp(v1, v2, t);
-	float3 expected = _WorldCenter.xyz + s;
+	// angle on a sphere = XZ distance / circumfrence = (d / 2 pi r) * 2 pi radians
+	float angle = d / radius;
+	float s, c;
+	sincos(angle, s, c);
 
-	// w is *very* important!
-	vv.xyz = expected;
-	return mul(World2Object, vv);
+	// normalized vector rotated by angle from up towards XZ
+	vertex.xz = (s / d) * toVertex.xz;
+	vertex.y = c;
+
+	// final position 
+	vertex.xyz = (vertex.xyz * toVertex.y) + center;
+	return vertex;
 #endif
+}
+
+float3 inverseCurve(float3 worldPos, float radius, float3 center)
+{
+#ifdef NO_CURVE
+	return worldPos;
+#else
+	float3 spherePos = worldPos - center.xyz;
+
+	worldPos.y = length(spherePos);
+	float3 norm = spherePos / worldPos.y;
+
+	float angle = acos(norm.y);
+
+	float d = angle * radius;
+	worldPos.xz = normalize(spherePos.xz) * d;
+
+	worldPos += center;
+
+	return worldPos;
+#endif
+}
+
+float4 curve(float4 vertex, float4x4 Object2World, float4x4 World2Object, float radius, float3 center)
+{
+#ifdef NO_CURVE
+	return vertex;
+#else
+	vertex = mul(Object2World, vertex);
+	vertex = curve(vertex, radius, center);
+	return mul(World2Object, vertex);
+#endif
+}
+
+float4 curveVertex(float4 vertex, float4x4 Object2World, float4x4 World2Object)
+{
+	return curve(vertex, Object2World, World2Object, _WorldRadius, _WorldCenter.xyz);
 }
 
 float4 curveVertexFixed(float4 vertex, float4x4 Object2World, float4x4 World2Object, float radius, float3 center)
 {
-    float4 vv = mul(Object2World, vertex);
-
-	float3 toVertex = vv.xyz - center;
-
-	float3 v1 = float3(0, toVertex.y, 0);			// first basis vector, height of the vertex
-	float3 xz = float3(toVertex.x, 0, toVertex.z);
-	float3 v2 = normalize(xz) * abs(toVertex.y);			// second basis vector, the xz- position, of the same height
-
-	float d = length(toVertex.xz);
-	float c = 2 * 3.14159 * abs(radius); // circumference of the world
-
-	// if we slerp from v1->v2, we get the curvature we want
-	float t = clamp(d / (c / 4), 0, 2);
-	float3 s = slerp(v1, v2, t);
-	float3 expected = center + s;
-
-	// w is *very* important!
-	vv.xyz = expected;
-	return mul(World2Object, vv);
+	return curve(vertex, Object2World, World2Object, radius, center);
 }
 
 float4 curveVertexFixed(float4 vertex, float radius, float3 center)
 {
-    //float4 vv = mul(Object2World, vertex);
-    float4 vv = vertex;
+	return curve(vertex, radius, center);
+}
 
-    float3 toVertex = vv.xyz - center;
-
-    float3 v1 = float3(0, toVertex.y, 0);			// first basis vector, height of the vertex
-    float3 xz = float3(toVertex.x, 0, toVertex.z);
-    float3 v2 = normalize(xz) * abs(toVertex.y);	// second basis vector, the xz- position, of the same height
-
-    float d = length(toVertex.xz);
-    float c = 2 * 3.14159 * abs(radius); // circumference of the world
-
-                                         // if we slerp from v1->v2, we get the curvature we want
-    float t = clamp(d / (c / 4), 0, 2);
-    float3 s = slerp(v1, v2, t);
-    float3 expected = center + s;
-
-    // w is *very* important!
-    vv.xyz = expected;
-    //return mul(World2Object, vv);
-    return vv;
+float3 inverseCurve(float3 vertex)
+{
+	return inverseCurve(vertex, _WorldRadius, _WorldCenter.xyz);
 }
 
 #endif

@@ -21,6 +21,7 @@ namespace Eco.Mods.WorldEdit
     using Eco.Gameplay.Players;
     using Eco.Core.Utils.AtomicAction;
     using Eco.Shared.Localization;
+    using Asphalt.Util;
 
     [Serialized]
     [Category("Hidden")]
@@ -59,7 +60,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
             return InteractResult.Success;
         }
@@ -86,7 +87,7 @@ namespace Eco.Mods.WorldEdit
             }
             catch (Exception e)
             {
-                Log.WriteError(e.ToStringPretty());
+                AsphaltLog.WriteError(e.ToStringPretty());
             }
             return InteractResult.NoOp;
         }

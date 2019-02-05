@@ -131,7 +131,7 @@ namespace Eco.Mods.WorldEdit
                     return;
                 }
 
-                Log.WriteLine("Unknown Type: " + pType);
+                AsphaltLog.WriteLine("Unknown Type: " + pType);
             }
 
             types[0] = typeof(WorldObject);
@@ -201,9 +201,8 @@ namespace Eco.Mods.WorldEdit
                 return;
             }
 
-            Log.WriteLine("Unknown Type: " + pType);
+            AsphaltLog.WriteLine("Unknown Type: " + pType);
         }
-
 
         public static Direction GetDirectionAndAmount(User pUser, string pDirectionAndAmount, out int pAmount)
         {
