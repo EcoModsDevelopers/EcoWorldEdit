@@ -1,7 +1,7 @@
 ManifestFileVersion: 0
-CRC: 1934812797
+CRC: 3052779555
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
-      Name: worldedit
+      Name: ecoworldedit
       Dependencies: {}

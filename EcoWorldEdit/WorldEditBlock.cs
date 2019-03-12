@@ -28,7 +28,7 @@ namespace Eco.Mods.WorldEdit
             if (constuctor == null)
             {
                 if (pBlock is PlantBlock)
-                    web.Data = EcoSerializer.Serialize(((PlantBlock)pBlock).Plant).ToArray();
+                    web.Data = EcoSerializer.Serialize(PlantBlock.GetPlant(pPosition)).ToArray();
 
                 if (pBlock is WorldObjectBlock)
                 {

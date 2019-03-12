@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Tutorial/Tutorial.unity
+- path: Assets/WorldEdit/WorldEditScene.unity
   isLoaded: 1
   isActive: 1

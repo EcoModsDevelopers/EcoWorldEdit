@@ -113,7 +113,7 @@ namespace Eco.Mods.WorldEdit
                         ps = WorldUtils.GetPlantSpecies(pType);
 
                         if (pSourceBlock != null)
-                            pb = ((PlantBlock)pSourceBlock).Plant;
+                            pb = PlantBlock.GetPlant(pPosition);
                     }
 
                     Plant newplant = EcoSim.PlantSim.SpawnPlant(ps, pPosition);
