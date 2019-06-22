@@ -72,14 +72,17 @@ namespace Eco.Mods.WorldEdit
                 }
             }
 
+            if (pType == typeof(EmptyBlock))
+            {
+                Eco.World.World.DeleteBlock(pPosition);
+                return;
+            }
+
             var constuctor = pType.GetConstructor(Type.EmptyTypes);
 
             if (constuctor != null)
             {
-                if (pType == typeof(EmptyBlock))
-                    Eco.World.World.DeleteBlock(pPosition);
-                else
-                    Eco.World.World.SetBlock(pType, pPosition);
+                Eco.World.World.SetBlock(pType, pPosition);
                 return;
             }
 
