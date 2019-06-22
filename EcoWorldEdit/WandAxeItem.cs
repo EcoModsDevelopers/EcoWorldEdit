@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Eco.Mods.WorldEdit
+﻿namespace Eco.Mods.WorldEdit
 {
     using System;
     using System.ComponentModel;
@@ -12,8 +6,6 @@ namespace Eco.Mods.WorldEdit
     using Eco.Gameplay.Interactions;
     using Eco.Gameplay.Items;
     using Eco.Shared.Items;
-    using Eco.World;
-    using Eco.World.Blocks;
     using Eco.Shared.Serialization;
     using Eco.Shared.Utils;
     using Eco.Core.Utils;

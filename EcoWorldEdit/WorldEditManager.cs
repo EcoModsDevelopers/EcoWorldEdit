@@ -1,5 +1,4 @@
 ﻿using Asphalt.Util;
-using Eco.Core.Plugins;
 using Eco.Core.Serialization;
 using Eco.Gameplay.Components;
 using Eco.Gameplay.Items;
@@ -10,7 +9,6 @@ using Eco.Shared.Math;
 using Eco.Shared.Utils;
 using Eco.Simulation;
 using Eco.Simulation.Agents;
-using Eco.Simulation.Settings;
 using Eco.Simulation.Types;
 using Eco.World;
 using Eco.World.Blocks;
@@ -20,9 +18,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Eco.Mods.WorldEdit
 {

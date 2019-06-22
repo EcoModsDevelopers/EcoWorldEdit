@@ -3,14 +3,8 @@ using Eco.Gameplay.Objects;
 using Eco.Gameplay.Plants;
 using Eco.Shared.Math;
 using Eco.Shared.Serialization;
-using Eco.Shared.Utils;
 using Eco.World;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Eco.Mods.WorldEdit
 {
@@ -62,5 +56,4 @@ namespace Eco.Mods.WorldEdit
             return new WorldEditBlock(Type, Position, Data);
         }
     }
-
 }
